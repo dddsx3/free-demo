@@ -25,7 +25,7 @@ place that must carry it is listed in §5.
        git init -b main
        git add -A
        git status --short
-       git ls-files | Measure-Object -Line     # expect 49 files, 1.6 MB
+       git ls-files | Measure-Object -Line     # expect 51 files, 1.7 MB
 
    Expect no `data/archive/` inputs beyond the derived CSVs, no `.tex`
    intermediates and no `legacy_copernicus/`. Then delete the temporary `.git`
@@ -93,11 +93,19 @@ Acceptance is all four of:
 
 1. `pytest` reports **9 passed**;
 2. `run_all.py --no-tex` exits 0 and prints the number check covering the five
-   `Phi` values, the 3.447/10.38 cm floors and the four archive rows;
+   `Phi` values, the 3.447/10.38 cm floors and the archive rows of Table 1;
 3. `figures/` holds **seven** `.pdf` files and seven `.png` previews;
 4. `git status --short` is empty after the run, i.e. the committed CSVs and
    figures are byte-identical to what the chain reproduces (the PDFs are
    exempt: matplotlib timestamps them).
+
+With a TeX installation, `python code/run_all.py` additionally builds both
+`manuscript.pdf` (25 pages) and `supplement.pdf` (15 pages), with 0 overfull
+boxes and no unresolved reference in either log. The manuscript body is 5 361
+tokens under the C&G counting rule (5 405 with title and authors, limit 5 500);
+`REPRO_CHECK.txt`, section 4, records the rule and the margin. If the limit is
+re-checked before submission and has moved, `REPRO_CHECK.txt` must be
+recomputed, not assumed.
 
 If `run_all.py` reports a headline number moved by more than 0.1 %, the
 committed CSVs and the code disagree — do not push that state; fix it first.

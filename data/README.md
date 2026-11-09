@@ -9,15 +9,15 @@ with a header row. Units are given in the manuscript, not in the column names.
 
 | file | contents | where it appears in the paper |
 |---|---|---|
-| `phi_master.csv` | one row per domain: raw count, `n_eff`, closure rule, `sigma_d` and source note, claim and source note, `MDE80`, `Phi`, verdict | Table 3 (master) |
-| `phi_archive_design.csv` | the same domain under three designs (campaign, 14 winters, 43 months) at both ends of `sigma_d` | the two archive rows of Table 3 and Fig. 6 |
-| `archive_neff_months.csv` | per-month valid cells, both bandwidth factors, `n_eff` and `sigma_d` for the four months quoted in Sect. 4.5 | Sect. 4.5 |
-| `archive_acf_curve.csv` | the 2019-04 CCI--CS2SMOS difference-field autocorrelation along `x` and `y`, 31 lags | Fig. 7 |
-| `phi_kernel_bounds.csv` | `Phi` for each (kernel, design) combination of the sea-ice family | Table 2 and the sea-ice interval |
-| `phi_variants.csv` | the alternative designs kept out of the main ranking | Table 4 |
-| `phi_sensitivity.csv` | the 25-cell `+/- 50 %` box, 25 rows per domain | Table 4 and Fig. 5 |
-| `phi_sensitivity_kernel.csv` | the same box applied to the empirical-kernel sea-ice bound and the 18-site soil-moisture variant | lower rows of Table 4 |
-| `phi_robustness.csv` | nominal, axis-wise and joint ranges plus the verdict per domain | the four diagnostics of Sect. 4.4 |
+| `phi_master.csv` | one row per domain: raw count, `n_eff`, closure rule, `sigma_d` and source note, claim and source note, `MDE80`, `Phi`, verdict | Table 1 (master) |
+| `phi_archive_design.csv` | the same domain under three designs (campaign, 14 winters, 43 months) at both ends of `sigma_d` | the two archive rows of Table 1 and Fig. S3 |
+| `archive_neff_months.csv` | per-month valid cells, both bandwidth factors, `n_eff` and `sigma_d` for the four months quoted | Table S4 |
+| `archive_acf_curve.csv` | the 2019-04 CCI--CS2SMOS difference-field autocorrelation along `x` and `y`, 31 lags | Fig. S4 |
+| `phi_kernel_bounds.csv` | `Phi` for each (kernel, design) combination of the sea-ice family | Table S2 and the sea-ice interval |
+| `phi_variants.csv` | the alternative designs kept out of the main ranking | Table S2 and Table S3 |
+| `phi_sensitivity.csv` | the 25-cell `+/- 50 %` box, 25 rows per domain | Table S3 and Fig. S2 |
+| `phi_sensitivity_kernel.csv` | the same box applied to the empirical-kernel sea-ice bound and the 18-site soil-moisture variant | lower rows of Table S3 |
+| `phi_robustness.csv` | nominal, axis-wise and joint ranges plus the verdict per domain | the four diagnostics of Sect. S6 |
 | `power_curve.csv` | power as a function of the non-centrality `k` for a grid of `Phi` | Fig. 1 |
 | `ref_check.csv` | per-entry outcome of the DOI/title audit: key, DOI, year, title, journal, similarity score, status | REPRO_CHECK.txt, section 4 |
 | `ref_rejected.csv` | candidates that failed the audit and were **not** used, with the reason | audit trail only |

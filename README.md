@@ -35,8 +35,8 @@ From the repository root:
 This runs the arithmetic, checks that no headline number has moved by more than
 0.1 % from the value printed in the manuscript, writes the seven derived tables
 to `data/`, writes the seven figures to `figures/`, and — if `pdflatex` and
-`bibtex` are on `PATH` — builds `manuscript.pdf`. The process exits non-zero if
-any stage fails.
+`bibtex` are on `PATH` — builds `manuscript.pdf` (25 pages) and
+`supplement.pdf` (15 pages). The process exits non-zero if any stage fails.
 
 Options:
 
@@ -83,10 +83,19 @@ states the expected values for the reference archive.
     data/                 derived tables written by the chain, see data/README.md
     figures/              figure PDFs and PNG previews, see figures/README.md
     manuscript.tex        manuscript source (elsarticle, author-year)
-    refs.bib              bibliography, 60 entries, all cited
+    supplement.tex        supplementary material, S1-S7 (same class, not counted)
+    refs.bib              bibliography, 54 entries, all cited
     REPRO_CHECK.txt       environment, commands, expected output, fingerprints
     REPO_SETUP.md         how to publish this directory as a public repository
     legacy_copernicus/    superseded Copernicus class package and template
+
+The manuscript is written to the Computers & Geosciences length rule: body text
+under the publisher's counting rule is 5 361 tokens, 5 405 with the title and
+author block, against a 5 500-word limit, with abstract, keywords, references
+and captions excluded. The supplement is a separate file, is not counted, and
+carries the derivation, the full provenance table, the sensitivity protocol,
+the archive diagnostics and the code inventory that the manuscript cites as
+S1-S7. `REPRO_CHECK.txt`, section 4, records the rule and the margin.
 
 `legacy_copernicus/` records that an earlier revision was prepared for
 Geoscientific Model Development: it holds `copernicus.cls`, `.bst`, `.cfg` and
@@ -99,8 +108,9 @@ so that the change of venue stays auditable.
 - No observational granule: the five domains use literature values that are
   fixed constants in `code/phi_core.py`, each with a citable source.
 - No credentials, no tokens, no personal data.
-- `manuscript.pdf` is a build artefact; `REPRO_CHECK.txt` records its
-  fingerprint, so a rebuilt PDF that differs in bytes is expected.
+- `manuscript.pdf` and `supplement.pdf` are build artefacts; `REPRO_CHECK.txt`
+  records their fingerprints, so a rebuilt PDF that differs in bytes is
+  expected.
 
 ## License
 

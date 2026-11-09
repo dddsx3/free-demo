@@ -3,7 +3,7 @@
 Stages (in order):
     1. phi_core.py    arithmetic -> data/*.csv               (no network)
     2. make_figures.py figures  -> figures/fig1..fig7        (no network)
-    3. pdflatex chain  manuscript.tex -> manuscript.pdf      (local TeX only)
+    3. pdflatex chain  manuscript.tex + supplement.tex -> both PDFs (local TeX only)
     4. verify_refs.py  every DOI vs Crossref / DataCite      (optional: --refs)
 
 Usage:
@@ -86,7 +86,7 @@ def check_numbers() -> None:
     if abs(float(hi["phi"].iloc[0]) - EXPECTED_INTERVAL[1]) > 0.01:
         bad.append(f"sea-ice high Phi: {float(hi['phi'].iloc[0]):.4f}")
 
-    # Archive rows of Table 3 / Sect. 5: measured sigma_d and n_eff, and the
+    # Archive rows of Table 1 / Sect. 5: measured sigma_d and n_eff, and the
     # two fourteen-winter verdicts that straddle Phi = 1.
     archive = pd.read_csv(DATA / "phi_archive_design.csv")
     want = {"single month, grid ACF (2019-04)": (331.8, 2.217),
@@ -112,41 +112,43 @@ def check_numbers() -> None:
             print("  " + line)
         raise SystemExit(1)
     print("\nNumber check OK: five Phi values, the 3.447/10.38 cm floors, the "
-          "1.28-3.74 sea-ice interval and the archive rows of Table 3 all match "
+          "1.28-3.74 sea-ice interval and the archive rows of Table 1 all match "
           "the manuscript.")
 
 
 def compile_tex() -> None:
-    """pdflatex -> bibtex -> pdflatex x2, then report warnings and page count."""
+    """pdflatex -> bibtex -> pdflatex x2 for both documents, then report."""
     latex = shutil.which("pdflatex")
     if latex is None:
         print("pdflatex not found on PATH; skipping the PDF stage.", flush=True)
         return
     print("\n== pdflatex chain ==", flush=True)
-    steps = [
-        ["pdflatex", "-interaction=nonstopmode", "manuscript.tex"],
-        ["bibtex", "manuscript"],
-        ["pdflatex", "-interaction=nonstopmode", "manuscript.tex"],
-        ["pdflatex", "-interaction=nonstopmode", "manuscript.tex"],
-    ]
-    for step in steps:
-        exe = shutil.which(step[0])
-        if exe is None:
-            print(f"{step[0]} not found; skipping the remaining TeX steps.")
-            return
-        subprocess.run([exe] + step[1:], cwd=str(ROOT), stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL, timeout=900)
+    for doc in ("manuscript", "supplement"):
+        print(f"-- {doc}.tex", flush=True)
+        steps = [
+            ["pdflatex", "-interaction=nonstopmode", f"{doc}.tex"],
+            ["bibtex", doc],
+            ["pdflatex", "-interaction=nonstopmode", f"{doc}.tex"],
+            ["pdflatex", "-interaction=nonstopmode", f"{doc}.tex"],
+        ]
+        for step in steps:
+            exe = shutil.which(step[0])
+            if exe is None:
+                print(f"{step[0]} not found; skipping the remaining TeX steps.")
+                return
+            subprocess.run([exe] + step[1:], cwd=str(ROOT), stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, timeout=900)
 
-    log = (ROOT / "manuscript.log").read_text(encoding="utf-8", errors="ignore")
-    overfull = log.count("Overfull \\hbox")
-    undefined = log.count("LaTeX Warning: There were undefined references")
-    if "Output written" not in log:
-        raise SystemExit("FAILED: no PDF was written")
-    line = [l for l in log.splitlines() if "Output written" in l][-1]
-    print(line.strip())
-    print(f"overfull hboxes: {overfull}   undefined-reference warnings: {undefined}")
-    if undefined:
-        raise SystemExit("FAILED: unresolved references in manuscript")
+        log = (ROOT / f"{doc}.log").read_text(encoding="utf-8", errors="ignore")
+        overfull = log.count("Overfull \\hbox")
+        undefined = log.count("LaTeX Warning: There were undefined references")
+        if "Output written" not in log:
+            raise SystemExit(f"FAILED: no PDF was written for {doc}")
+        line = [l for l in log.splitlines() if "Output written" in l][-1]
+        print("  " + line.strip())
+        print(f"  overfull hboxes: {overfull}   undefined-reference warnings: {undefined}")
+        if undefined:
+            raise SystemExit(f"FAILED: unresolved references in {doc}")
 
 
 def sha256(path: Path) -> str:
@@ -158,9 +160,13 @@ def sha256(path: Path) -> str:
 def fingerprint() -> None:
     """Print hashes of the artefacts so a reader can confirm byte-identity."""
     print("\n== fingerprints (sha256) ==")
-    for pattern, folder in (("*.csv", DATA), ("*.pdf", FIG), ("manuscript.pdf", ROOT)):
+    for pattern, folder in (("*.csv", DATA), ("*.pdf", FIG)):
         for p in sorted(folder.glob(pattern)):
             print(f"{sha256(p)[:16]}  {p.relative_to(ROOT)}")
+    for name in ("manuscript.pdf", "supplement.pdf"):
+        p = ROOT / name
+        if p.exists():
+            print(f"{sha256(p)[:16]}  {name}")
 
 
 def main() -> None:

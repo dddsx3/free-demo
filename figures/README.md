@@ -6,15 +6,15 @@ quick inspection. File names do not match figure numbers, because the figures
 were introduced in a different order from the one they appear in; the mapping
 is:
 
-| file | figure in the manuscript | content |
+| file | figure | content |
 |---|---|---|
-| `fig1_power.pdf` | Figure 1 | power to detect a true difference as a function of the multiple of the floor, plus the non-central `t` correction |
-| `fig5_kernel.pdf` | Figure 2 | two correlation models of the same difference field, and the two floors they imply for sea ice |
-| `fig2_ranking.pdf` | Figure 3 | the five `Phi` values on a logarithmic axis, sea ice drawn as an interval |
-| `fig3_floor.pdf` | Figure 4 | verification floor against claimed magnitude, with the `Phi = 0.1, 1, 10` diagonals |
-| `fig4_sensitivity.pdf` | Figure 5 | the five `+/- 50 %` sensitivity panels |
-| `fig6_design.pdf` | Figure 6 | `Phi` against `n_eff` for the two ends of the measured `sigma_d`, with the campaign, fourteen-winter and 43-month designs marked |
-| `fig7_acf.pdf` | Figure 7 | autocorrelation of the 2019-04 CCI--CS2SMOS difference field along `x` and `y`, with the two bandwidth factors |
+| `fig1_power.pdf` | Fig. 1 (manuscript) | power to detect a true difference as a function of the multiple of the floor |
+| `fig2_ranking.pdf` | Fig. 2 (manuscript) | the five `Phi` values on a logarithmic axis, sea ice drawn as an interval |
+| `fig3_floor.pdf` | Fig. 3 (manuscript) | verification floor against claimed magnitude, with the `Phi = 0.1, 1, 10` diagonals |
+| `fig5_kernel.pdf` | Fig. S1 (supplement) | two correlation models of the same difference field, and the five floors they imply |
+| `fig4_sensitivity.pdf` | Fig. S2 (supplement) | the five `+/- 50 %` sensitivity panels |
+| `fig6_design.pdf` | Fig. S3 (supplement) | `Phi` against `n_eff` for the two ends of the measured `sigma_d`, with the campaign, fourteen-winter and 43-month designs marked |
+| `fig7_acf.pdf` | Fig. S4 (supplement) | autocorrelation of the 2019-04 CCI--CS2SMOS difference field along `x` and `y`, with the two bandwidth factors |
 
 ## Determinism
 

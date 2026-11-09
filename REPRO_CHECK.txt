@@ -6,8 +6,8 @@ Target     : Computers & Geosciences (Elsevier), class `elsarticle.cls`
              [preprint,12pt,authoryear]; author-year citations, bibliography
              style `elsarticle-harv.bst`; manuscript type: research paper
 Verified on: 2026-11-08, Windows 11, Asia/Shanghai
-Rebuilt for publication: 2026-11-09 (repository URL inserted; 40 pages,
-                         0 overfull, 1 underfull, numbers unchanged)
+Rebuilt     : 2026-11-09 (repository URL inserted; word-count compliance pass for
+              the C&G limit; two files now build: manuscript + supplement)
 
 -----------------------------------------------------------------------------
 1. ENVIRONMENT
@@ -21,13 +21,14 @@ scipy         1.17.0
 pymupdf       installed (used only for the word count / page audit, not for the paper)
 TeX           MiKTeX-pdfTeX 4.18 (MiKTeX 24.1), bibtex from the same distribution
 Template      Elsevier elsarticle package (elsarticle.cls and
-              elsarticle-harv.bst) from the MiKTeX distribution; no local
-              modification of the class or the bibliography style
+              elsarticle-harv.bst) from the MiKTeX distribution; both documents
+              use the same class and the same bibliography style
 Network       required only for `verify_refs.py` (Crossref / DataCite). Every other
               stage is offline and deterministic.
 
 No observational granule is downloaded by any script. The inputs are the values
-tabulated in Table 1, each with a citable source.
+tabulated in Table 1 of the manuscript and in Table S1 of the supplement, each
+with a citable source.
 
 -----------------------------------------------------------------------------
 2. COMMANDS
@@ -35,7 +36,7 @@ tabulated in Table 1, each with a citable source.
 From the paper root:
 
     git clone https://github.com/dddsx3/free-demo
-    python code/run_all.py              # arithmetic + number check + figures + PDF
+    python code/run_all.py              # arithmetic + number check + figures + both PDFs
     python code/run_all.py --refs       # the above plus a full DOI re-resolution
     python code/run_all.py --no-tex     # numbers and figures only
     python code/run_all.py --refs-only  # reference audit only
@@ -49,10 +50,14 @@ Individual stages, if preferred:
     bibtex manuscript
     pdflatex -interaction=nonstopmode manuscript.tex
     pdflatex -interaction=nonstopmode manuscript.tex
+    pdflatex -interaction=nonstopmode supplement.tex
+    bibtex supplement
+    pdflatex -interaction=nonstopmode supplement.tex
+    pdflatex -interaction=nonstopmode supplement.tex
 
-`run_all.py` exits non-zero if any stage fails, if the reference list is
-unresolved in the PDF, or if a headline number moves by more than 0.1 % from the
-value printed in the manuscript.
+`run_all.py` exits non-zero if any stage fails, if either PDF carries unresolved
+references, or if a headline number moves by more than 0.1 % from the value
+printed in the manuscript.
 
 -----------------------------------------------------------------------------
 3. EXPECTED CONSOLE OUTPUT (arithmetic stage)
@@ -89,38 +94,83 @@ value printed in the manuscript.
     43 months      n_eff 13815.9 sigma_d 0.3892   phi 0.344
     43 months      n_eff 13815.9 sigma_d 0.6500   phi 0.574
 
-The same numbers appear in Table 3 (master, including the two archive rows),
-Table 4 (sensitivity), Fig. 3 (ranking with the sea-ice error bar), Fig. 5
-(the five sensitivity panels), Fig. 6 (Phi against design) and Fig. 7 (the
-2019-04 difference-field autocorrelation).
+The same numbers appear in the manuscript's Table 1 (master, including the two
+archive rows) and Fig. 2 (ranking with the sea-ice error bar), and in the
+supplement's Table S2 (kernel family), Table S3 (sensitivity), Fig. S2 (the
+five sensitivity panels), Fig. S3 (Phi against design) and Fig. S4 (the 2019-04
+difference-field autocorrelation). Tables S1 and S4 have no counterpart in the
+arithmetic stage: they transcribe the provenance records and the measured
+monthly diagnostics.
 
 -----------------------------------------------------------------------------
-4. PDF AUDIT
+4. PDF AUDIT AND THE C&G LENGTH RULE
 -----------------------------------------------------------------------------
-    Output written on manuscript.pdf (40 pages, ...)
+Manuscript (`manuscript.pdf`):
+    Output written on manuscript.pdf (25 pages, 406 263 bytes)
     Overfull \hbox occurrences .......... 0
-    Underfull \hbox occurrences ......... 1 (badness 1248, Introduction)
-    Undefined references ................ 0
-    Undefined citations ................. 0
-    Text before the reference list ...... approx. 10 800 words
-      (title block, abstract, main text, appendix, figure captions and
-       table bodies; the reference list is excluded. The class option
-       `preprint` sets the text in a wide single column, so neither the
-       page count nor the word count is comparable with the earlier
-       Copernicus layout, which gave 27 pages and approx. 8600 words
-       under a narrower counting rule.)
-    Abstract (same tokenisation) ........ 286 words ('Sect.' counting as one)
-    Figures ............................. 7
-    Tables .............................. 4
-    Bibliography entries ............... 60, all cited and typeset
+    Underfull \hbox occurrences ......... 0
+    Undefined references / citations .... 0
+    Figures ............................. 3 (Figs. 1-3)
+    Tables .............................. 1 (Table 1, master; the provenance table
+                                             moved to Table S1)
+    Bibliography entries ............... 54, all cited and typeset
+    Abstract ............................ 277 words (limit is usually 300)
 
-Reference audit (data/ref_check.csv): 59 entries resolved and accepted
-(either by exact DOI on Crossref/DataCite, or by title search with a title
-similarity >= 0.84 and a year within +-3); 0 rejected entries remain in the
-paper. The 60th entry is Kish (1965), *Survey Sampling*, a book with no DOI,
-typeset by hand. Preprint/discussion DOIs (tc-YYYY-N, tcd-*, essd-YYYY-N,
-hess-YYYY-N, cpd-*, cptc-*) were rejected by construction so that the final
-reference list cannot point at a manuscript version.
+Supplement (`supplement.pdf`):
+    Output written on supplement.pdf (15 pages, 404 746 bytes)
+    Overfull \hbox occurrences .......... 0
+    Underfull \hbox occurrences ......... 0
+    Undefined references / citations .... 0
+    Sections ............................ S1-S7
+    Figures ............................. 4 (Figs. S1-S4)
+    Tables .............................. 4 (Tables S1-S4)
+    Bibliography ....................... 14 entries, all cited
+    Body words .......................... 3 240 (captions, bibliography and the
+                                             itemised inventory excluded; 3 660
+                                             including table bodies and captions)
+
+WORD COUNT UNDER THE C&G RULE
+    Rule archived from the publisher's guide (snapshot 2023-12 to 2024-04; to be
+    re-checked before submission): Research/Application 5 500 words, revision
+    6 500 words; non-Review +10 %; "Only the Manuscript file will be included for
+    wordcount (Abstract, Keywords, Highlights, References and Captions will be
+    excluded)". The supplement is a separate file and is not counted.
+
+    Tokenisation used here: the body of `manuscript.tex` after `\end{frontmatter}`
+    and before the bibliography, with `\caption`, `\section*` material after the
+    Conclusions (CRediT, competing interests, acknowledgements), `\ref`/`\label`/
+    `\cite` commands, math and TeX markup removed; table bodies are counted,
+    captions are not. `--` and `~` collapse to single tokens.
+
+        body text, excluding title and author block ... 5 361 tokens
+        title plus author/affiliation block ..........    44 tokens
+        counted total (C&G rule) ...................... 5 405 words
+        limit ......................................... 5 500 words
+        margin ........................................    95 words
+
+    For reference, the 5 405 figure treats typeset formulas as formulas rather
+    than words. If a publisher's Word counter charges each inline formula as one
+    word, add roughly 100-150 and the total reaches about 5 500; that is the
+    reason the manuscript keeps a 95-word text margin rather than sitting at the
+    limit. Any further shortening should take text from the Discussion rather
+    than from the criterion, the stopping conditions, the reference
+    implementation or the falsification conditions.
+
+    The abstract (277 words) and keywords are excluded under the rule. There are
+    no Highlights: the class used here (elsarticle `preprint`) has no Highlights
+    environment, and C&G's optional Highlights are supplied separately at
+    submission and are excluded from the count.
+
+Reference audit: `data/ref_check.csv` is the snapshot written by the last full
+`--refs` run (2026-11-08, over the then-60-key bibliography). Every entry it
+covers resolved on Crossref or DataCite, and the only entry without a DOI is
+Kish (1965), *Survey Sampling*, typeset by hand. The file was deliberately not
+regenerated after the 2026-11-09 trims, because `verify_refs.py` rebuilds refs.bib
+from its own candidate list and would have restored the keys that compression
+removed; running `run_all.py --refs` before submission regenerates both and is
+expected to report 54 accepted entries. Preprint/discussion DOIs (tc-YYYY-N,
+tcd-*, essd-YYYY-N, hess-YYYY-N, cpd-*, cptc-*) are rejected by construction so
+that the final reference list cannot point at a manuscript version.
 
 CORRECTION RECORD (2026-11-08): an earlier version of this record stated a
 bibliography count that did not match the typeset list. The discrepancy was the
@@ -140,6 +190,32 @@ identifiers were left as \texttt but given explicit break points, the seven
 table names now use \path, and the preamble sets \emergencystretch to 1 em. The
 current build reports 0 overfull boxes.
 
+CORRECTION RECORD (2026-11-09): the manuscript was restructured to respect the
+5 500-word limit. Nine tables/figures and four sections of detail moved out of
+the manuscript into `supplement.tex`, which is a separate file and is not
+counted: the derivation and closure algebra (S1, S2.2), the full provenance
+table (S1), the kernel family (S3, Fig. S1, Table S2), the sensitivity protocol
+(S4, Fig. S2, Table S3), the archive measurement (S5, Figs. S3/S4, Table S4),
+the four diagnostics (S6) and the code inventory (S7). The criterion, the
+stopping conditions, the reference implementation and all six falsification
+conditions stayed in the manuscript. Six further bibliography keys that lost
+their last citation during compression (benjamin2018redefine,
+wasserstein2016asa, simmons2011falsepositive, amrhein2019scientists,
+mcshane2017statistical, efron1979bootstrap) were removed, leaving 54 keys and
+54 typeset entries.
+
+Four arithmetic inconsistencies found in the same pass were corrected in place,
+without changing any verdict: the archive crossing for sigma_d = 0.65 m was
+written as 4 692 and is 4 550 = (2.802 x 0.65 / 0.027)^2; the salinity
+falsification threshold was written as 0.012 PSU and is 0.0039 PSU, the floor in
+Table 1; the one-sided constant 2.486 was described as a 30 % reduction and is
+11 % (2.486/2.802); and the non-central t correction was described as 10-20 %
+below n_eff = 10, whereas the computed constants are +5 % at n_eff = 20, +12 %
+at 10, +34 % at 5 and +205 % at 2.41 (the biomass Phi rises from 2.71 to 8.27
+if the correction is applied). The soil-moisture closure argument now uses the
+network count (seven independent networks give Phi = 1.06) rather than an
+intra-network correlation that the cluster rule cannot reach.
+
 -----------------------------------------------------------------------------
 5. ARTEFACT FINGERPRINTS (sha256, first 32 hex characters)
 -----------------------------------------------------------------------------
@@ -147,12 +223,14 @@ current build reports 0 overfull boxes.
     937b9f65f174456ddb5265ee8f1fb09b  data/phi_kernel_bounds.csv
     dc0728b1a2fed3b3b1cd3cf466c7bfcd  data/phi_sensitivity.csv
     4c1c004bb2a7c3634ce5e0164460239b  data/phi_robustness.csv
-    f1e835249b696ee0d263e0b73cf1d29e  data/phi_archive_design.csv
-    cd34bf7b79b4043f90be463a73d0b561  data/archive_neff_months.csv
+    d23d9712502df22e55f221825b6ad894  data/phi_archive_design.csv
+    990cc6e68213331893fa5edd14e1c09f  data/archive_neff_months.csv
     f8a4ac7229f3ccce259238ed16fd7049  data/archive_acf_curve.csv
-    83e5562699051c71a5f94f99c237b716  manuscript.tex
-    47f755660bc57203b211deac6144e217  refs.bib
-    afc1ef6a966dc4ecbe2ec2a2526da999  manuscript.pdf
+    1a92498e7754ea468b7886963b2e667a  manuscript.tex
+    68d85696605ec0a954b3264aa0d81d5e  supplement.tex
+    74047f4c9208812f4715d17549f23b29  refs.bib
+    f65790758e6af54e94b52b9dcbdaf24f  manuscript.pdf (committed build)
+    fd5651cff0f420ae1c147e3e054cd53d  supplement.pdf (committed build)
 
 Caveat on figure hashes: matplotlib writes a creation timestamp into every PDF,
 so `figures/*.pdf` hashes change between runs even when the plotted data are
@@ -174,12 +252,18 @@ quantities are identical", not "the PDF bytes are identical".
   author now carry the data centre as a corporate author ({PANGAEA},
   {ORNL DAAC}, {GPCC}), so that author-year sorting and the in-text label
   ("PANGAEA, 2021") are well defined. `bibtex` runs without warnings.
-- The literature values that enter Table 1 are fixed constants in
+- The literature values that enter Table 1 and Table S1 are fixed constants in
   `code/phi_core.py`. Changing a source value changes every downstream table,
-  Fig. 3 and Fig. 5 in one run; there is no second place where a number is
-  typed by hand.
-- The PDF is produced by `run_all.py` only if `pdflatex` is on PATH; otherwise
-  the stage is skipped with a message and the rest of the chain still completes.
+  both documents and Figs. 1, 2, 3, S2 and S3 in one run; there is no second
+  place where a number is typed by hand.
+- The PDFs are produced by `run_all.py` only if `pdflatex` is on PATH;
+  otherwise the stage is skipped with a message and the rest of the chain still
+  completes. Both documents need their own bibtex pass (`manuscript.bbl`,
+  `supplement.bbl`).
+- `verify_refs.py` regenerates refs.bib from its internal candidate list, so a
+  `--refs` run restores keys that were deleted during compression. After such a
+  run, trim refs.bib back to the key set that the two documents cite before
+  committing; the committed file (54 keys, 54 typeset) is the post-trim state.
 - Byte-identity of the committed CSVs and figures holds for the pinned
   reference versions in section 1. An anonymous clean clone on 2026-11-09
   resolved numpy 2.5.4, pandas 3.1.1, matplotlib 3.11.2 and scipy 1.18.1:
@@ -187,6 +271,10 @@ quantities are identical", not "the PDF bytes are identical".
   and the seven figures then differ in bytes (the power-curve values agree to
   2.4 x 10^-16; the figures differ by matplotlib version). The numbers, not
   the bytes, are what the manuscript claims.
+- The word counts in section 4 are token counts of the TeX source, not of a
+  Word file. A publisher's counter may differ by a few per cent, in either
+  direction, because it may charge inline formulas as words and may hyphenate
+  differently. The 95-word margin is the allowance for that.
 
 -----------------------------------------------------------------------------
 7. WHAT THIS RECORD DOES NOT COVER
@@ -202,5 +290,9 @@ quantities are identical", not "the PDF bytes are identical".
   a Zenodo-linked release and therefore needs the corresponding account.
   `REPO_SETUP.md` gives the release procedure.
 - The suggested-reviewer list in `cover_letter.md` is a template.
+- The word-count rule is quoted from an archived copy of the publisher's guide
+  (snapshot 2023-12 to 2024-04). It must be re-checked on the live guide before
+  submission; if the limit or the exclusions have changed, section 4 has to be
+  recomputed, not assumed.
 
 End of record.
