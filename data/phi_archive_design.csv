@@ -1,0 +1,8 @@
+design,truth,n_eff,sigma_d,claim,mde80_cm,phi
+"campaign (297 flight days + IceBird, Kish)",independent,325.2,0.650,0.027,10.100,3.741
+"campaign, measured shared-sensor sigma",shared,325.2,0.3892,0.027,6.048,2.240
+"single month, grid ACF (2019-04)",shared,331.8,0.3892,0.027,5.987,2.217
+"14 winters (one independent month each)",shared,4498.2,0.3892,0.027,1.626,0.602
+"14 winters (one independent month each)",independent,4498.2,0.650,0.027,2.716,1.006
+"43 months (pooled upper bound)",shared,13815.9,0.3892,0.027,0.928,0.344
+"43 months (pooled upper bound)",independent,13815.9,0.650,0.027,1.550,0.574

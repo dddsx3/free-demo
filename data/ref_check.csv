@@ -1,0 +1,72 @@
+key,doi,year,title,journal,score,status
+cohen1992power,10.1037/0033-2909.112.1.155,1992,A power primer.,Psychological Bulletin,1.0,accepted
+ioannidis2005why,10.1371/journal.pmed.0020124,2005,Why Most Published Research Findings Are False,PLoS Medicine,1.0,accepted
+button2013power,10.1038/nrn3475,2013,Power failure: why small sample size undermines the reliability of neuroscience,Nature Reviews Neuroscience,1.0,accepted
+benjamin2018redefine,10.1038/s41562-017-0189-z,2018,Redefine statistical significance,Nature Human Behaviour,1.0,accepted
+wasserstein2016asa,10.1080/00031305.2016.1154108,2016,"The ASA Statement on
+                    <i>p</i>
+                    -Values: Context, Process, and Purpose",The American Statistician,1.0,accepted
+greenland2016statistical,10.1007/s10654-016-0149-3,2016,"Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations",European Journal of Epidemiology,1.0,accepted
+simmons2011falsepositive,10.1177/0956797611417632,2011,False-Positive Psychology,Psychological Science,1.0,accepted
+altman1995absence,10.1136/bmj.311.7003.485,1995,Statistics notes: Absence of evidence is not evidence of absence,BMJ,1.0,accepted
+lenth2001some,10.1198/000313001317098149,2001,Some Practical Guidelines for Effective Sample Size Determination,The American Statistician,1.0,accepted
+nakagawa2007effect,10.1111/j.1469-185x.2007.00027.x,2007,"Effect size, confidence interval and statistical significance: a practical guide for biologists",Biological Reviews,1.0,accepted
+sedlmeier1989do,10.1037/0033-2909.105.2.309,1989,Do studies of statistical power have an effect on the power of studies?,Psychological Bulletin,1.0,accepted
+sterne2001sifting,10.1136/bmj.322.7280.226,2001,Sifting the evidence---what's wrong with significance tests? Another comment on the role of statistical methods,BMJ,1.0,accepted
+perneger1998whats,10.1136/bmj.316.7139.1236,1998,What's wrong with Bonferroni adjustments,BMJ,1.0,accepted
+amrhein2019scientists,10.1038/d41586-019-00857-9,2019,Scientists rise up against statistical significance,Nature,1.0,accepted
+mcshane2017statistical,10.1080/01621459.2017.1289846,2017,Statistical Significance and the Dichotomization of Evidence,Journal of the American Statistical Association,1.0,accepted
+box1976science,10.1080/01621459.1976.10480949,1976,Science and Statistics,Journal of the American Statistical Association,1.0,accepted
+bretherton1999effective,10.1175/1520-0442(1999)012<1990:tenosd>2.0.co;2,1999,The Effective Number of Spatial Degrees of Freedom of a Time-Varying Field,Journal of Climate,1.0,accepted
+zwiers1995taking,10.1175/1520-0442(1995)008<0336:tsciai>2.0.co;2,1995,Taking Serial Correlation into Account in Tests of the Mean,Journal of Climate,1.0,accepted
+kunsch1989jackknife,10.1214/aos/1176347265,1989,The Jackknife and the Bootstrap for General Stationary Observations,The Annals of Statistics,1.0,accepted
+politis1994stationary,10.1080/01621459.1994.10476870,1994,The Stationary Bootstrap,Journal of the American Statistical Association,1.0,accepted
+efron1979bootstrap,10.1214/aos/1176344552,1979,Bootstrap Methods: Another Look at the Jackknife,The Annals of Statistics,1.0,accepted
+benjamini1995controlling,10.1111/j.2517-6161.1995.tb02031.x,1995,Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing,Journal of the Royal Statistical Society Series B: Statistical Methodology,1.0,accepted
+storey2002direct,10.1111/1467-9868.00346,2002,A Direct Approach to False Discovery Rates,Journal of the Royal Statistical Society Series B: Statistical Methodology,1.0,accepted
+dutilleul1993modifying,10.2307/2532625,1993,Modifying the t Test for Assessing the Correlation Between Two Spatial Processes,Biometrics,1.0,accepted
+legendre1993spatial,10.2307/1939924,1993,Spatial Autocorrelation: Trouble or New Paradigm?,Ecology,1.0,accepted
+hurlbert1984pseudoreplication,10.2307/1942661,1984,Pseudoreplication and the Design of Ecological Field Experiments,Ecological Monographs,1.0,accepted
+merchant2017uncertainty,10.5194/essd-9-511-2017,2017,Uncertainty information in climate data records from Earth observation,Earth System Science Data,1.0,accepted
+loew2017validation,10.1002/2017rg000562,2017,Validation practices for satellite‐based Earth observation data across communities,Reviews of Geophysics,0.994,accepted
+taylor2001summarizing,10.1029/2000jd900719,2001,Summarizing multiple aspects of model performance in a single diagram,Journal of Geophysical Research: Atmospheres,1.0,accepted
+ricker2014first,10.5194/tc-8-1607-2014,2014,Sensitivity of CryoSat-2 Arctic sea-ice freeboard and thickness on radar-waveform interpretation,The Cryosphere,1.0,accepted
+ricker2017weekly,10.5194/tc-11-1607-2017,2017,A weekly Arctic sea-ice thickness data record from merged CryoSat-2 and SMOS satellite data,The Cryosphere,1.0,accepted
+kurtz2013sea,10.5194/tc-7-1035-2013,2013,"Sea ice thickness, freeboard, and snow depth products from Operation  IceBridge airborne data",The Cryosphere,1.0,accepted
+kurtz2011snow,10.1029/2011gl049216,2011,Large-scale surveys of snow depth on Arctic sea ice from Operation IceBridge,Geophysical Research Letters,1.0,accepted
+landy2022year,10.1038/s41586-022-05058-5,2022,A year-round satellite sea-ice thickness record from CryoSat-2,Nature,1.0,accepted
+sallila2019assessment,10.5194/tc-13-1187-2019,2019,Assessment of contemporary satellite sea ice thickness products for Arctic sea ice,The Cryosphere,1.0,accepted
+notz2016observed,10.1126/science.aag2345,2016,"Observed Arctic sea-ice loss directly follows anthropogenic CO
+            <sub>2</sub>
+            emission",Science,0.993,accepted
+stroeve2018arctic,10.1111/nyas.13856,2018,"The Arctic's sea ice cover: trends, variability, predictability, and comparisons to the Antarctic",Annals of the New York Academy of Sciences,0.884,accepted
+kwok2009thinning,10.1029/2009jc005312,2009,Thinning and volume loss of the Arctic Ocean sea ice cover: 2003–2008,Journal of Geophysical Research: Oceans,1.0,accepted
+laxon2013cryosat,10.1002/grl.50193,2013,CryoSat‐2 estimates of Arctic sea ice thickness and volume,Geophysical Research Letters,1.0,accepted
+entekhabi2010soil,10.1109/jproc.2010.2043918,2010,The Soil Moisture Active Passive (SMAP) Mission,Proceedings of the IEEE,1.0,accepted
+colliander2017validation,10.1016/j.rse.2017.01.021,2017,Validation of SMAP surface soil moisture products with core validation sites,Remote Sensing of Environment,1.0,accepted
+dorigo2021international,10.5194/hess-25-5749-2021,2021,The International Soil Moisture Network: serving  Earth system science for over a decade,Hydrology and Earth System Sciences,1.0,accepted
+gruber2018sparse,10.1002/2017wr021277,2018,Assimilation of Spatially Sparse In Situ Soil Moisture Networks into a Continuous Model Domain,Water Resources Research,1.0,accepted
+gruber2019evolution,10.5194/essd-11-717-2019,2019,Evolution of the ESA CCI Soil Moisture climate data records and their underlying merging methodology,Earth System Science Data,1.0,accepted
+dorigo2011international,10.5194/hess-15-1675-2011,2011,The International Soil Moisture Network: a data hosting facility for global in situ soil moisture measurements,Hydrology and Earth System Sciences,1.0,accepted
+bingham2012interpolation,10.1175/jtech-d-11-00099.1,2012,A Novel Approach for the High-Resolution Interpolation of In Situ Sea Surface Salinity,Journal of Atmospheric and Oceanic Technology,1.0,accepted
+vinogradova2013small,10.1175/jtech-d-13-00110.1,2013,Small-Scale Variability in Sea Surface Salinity and Implications for Satellite-Derived Measurements,Journal of Atmospheric and Oceanic Technology,1.0,accepted
+meissner2011remote,10.2112/jcoastres-d-11-00060.1,2011,Remote Sensing of Sea Surface Salinity: An Overview with Case Studies,Journal of Coastal Research,1.0,accepted
+li2018evaluation,10.1029/2018jd028991,2018,"Validating the Integrated Multisatellite Retrievals for Global Precipitation Measurement in Terms of Diurnal Variability With Hourly Gauge Observations Collected at 50,000 Stations in China",Journal of Geophysical Research: Atmospheres,1.0,accepted
+beck2019daily,10.5194/hess-23-207-2019,2019,Daily evaluation of 26 precipitation datasets using Stage-IV gauge-radar data for the CONUS,Hydrology and Earth System Sciences,1.0,accepted
+sun2018review,10.1002/2017rg000574,2018,"A Review of Global Precipitation Data Sets: Data Sources, Estimation, and Intercomparisons",Reviews of Geophysics,1.0,accepted
+huffman2020integrated,10.1007/978-3-030-24568-9_19,2020,Integrated Multi-satellite Retrievals for the Global Precipitation Measurement (GPM) Mission (IMERG),Advances in Global Change Research,1.0,accepted
+kidd2011status,10.5194/hess-15-1109-2011,2011,Status of satellite precipitation retrievals,Hydrology and Earth System Sciences,1.0,accepted
+tan2019imerg,10.1175/jtech-d-19-0114.1,2019,IMERG V06: Changes to the Morphing Algorithm,Journal of Atmospheric and Oceanic Technology,1.0,accepted
+huffman2007trmm,10.1175/jhm560.1,2007,"The TRMM Multisatellite Precipitation Analysis (TMPA): Quasi-Global, Multiyear, Combined-Sensor Precipitation Estimates at Fine Scales",Journal of Hydrometeorology,1.0,accepted
+beck2017global,10.5194/hess-21-6201-2017,2017,Global-scale evaluation of 22 precipitation datasets using gauge observations and hydrological modeling,Hydrology and Earth System Sciences,1.0,accepted
+duncanson2022aboveground,10.1016/j.rse.2021.112845,2022,Aboveground biomass density models for NASA’s Global Ecosystem Dynamics Investigation (GEDI) lidar mission,Remote Sensing of Environment,1.0,accepted
+dubayah2020global,10.1016/j.srs.2020.100002,2020,The Global Ecosystem Dynamics Investigation: High-resolution laser ranging of the Earth’s forests and topography,Science of Remote Sensing,0.995,accepted
+chave2014improved,10.1111/gcb.12629,2014,Improved allometric models to estimate the aboveground biomass of tropical trees,Global Change Biology,1.0,accepted
+saatchi2011benchmark,10.1073/pnas.1019576108,2011,Benchmark map of forest carbon stocks in tropical regions across three continents,Proceedings of the National Academy of Sciences,1.0,accepted
+hersbach2020era5,10.1002/qj.3803,2020,The ERA5 global reanalysis,Quarterly Journal of the Royal Meteorological Society,1.0,accepted
+munoz2021era5land,10.5194/essd-13-4349-2021,2021,ERA5-Land: a state-of-the-art global reanalysis dataset for land applications,Earth System Science Data,1.0,accepted
+rodell2004gldas,10.1175/bams-85-3-381,2004,The Global Land Data Assimilation System,Bulletin of the American Meteorological Society,1.0,accepted
+xu2021changes,10.1126/sciadv.abe9829,2021,Changes in global terrestrial live biomass over the 21st century,Science Advances,1.0,accepted
+icebird_pangaea,10.1594/PANGAEA.933912,2021,"Airborne sea ice parameters during the IceBird Winter 2019 campaign in the Arctic Ocean, Version 1",dataset,1.0,accepted
+gedi_l4a,10.3334/ORNLDAAC/2056,2022,"GEDI L4A Footprint Level Aboveground Biomass Density, Version 2.1",dataset,1.0,accepted
+gpcc_v2022,10.5676/DWD_GPCC/FD_M_V2022_100,2022,GPCC Full Data Monthly Version 2022 at 1.0°: Monthly Land-Surface Precipitation from Rain-Gauges built on GTS-based and Historic Data,dataset,1.0,accepted

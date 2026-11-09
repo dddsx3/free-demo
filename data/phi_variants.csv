@@ -1,0 +1,6 @@
+id,label,sigma_d,claim,n_eff,floor_m,floor,phi
+SIT_ACF,"SIT, empirical difference-field ACF, archive m=8",0.65,0.027,,0.03447,0.03447,1.2766666666666666
+SIT_EXP,"SIT, exponential kernel L=326 km, archive m=8",0.65,0.027,,0.1038,0.1038,3.8444444444444446
+SIT_KISH,"SIT, exponential kernel, Kish archive (n_eff=325.2)",0.65,0.027,325.2,,0.10099647567925822,3.740610210342897
+SM_CVS,"Soil moisture, 18 core validation sites (strict)",0.04,0.04,18.0,,0.026417509345129417,0.6604377336282354
+SSS_M,"Sea surface salinity, single-month (conservative)",0.2,0.2,516.6948887002527,,0.024653639655120338,0.12326819827560169

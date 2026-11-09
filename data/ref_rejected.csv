@@ -1,0 +1,10 @@
+key,reason,title,doi,score
+hoenig2001abuse,year 2009 != 2001,Power calculations for global and local Moran’s,10.1016/j.csda.2008.07.021,0.476
+kerr2012smos,title similarity 0.69,Evaluation of the SMOS L-MEB passive microwave soil moisture retrieval algorithm,10.1016/j.rse.2008.10.010,0.689
+koster2009analyzing,title similarity 0.69,"Analyzing the Concurrence of Meteorological Droughts and Warm Periods, with Implications for the Determination of Evaporative Regime",10.1175/2008jcli2718.1,0.69
+tang2018aquarius,year 2014 != 2018,Validation of <scp>A</scp>quarius sea surface salinity with in situ measurements from <scp>A</scp>rgo floats and moored buoys,10.1002/2014jc010101,0.99
+bulk2019salinity,year 2008 != 2019,Salinity and the Global Water Cycle,10.5670/oceanog.2008.63,1.0
+joyce2004cmorph,lookup failed: HTTP Error 404: Not Found,CMORPH: a method that produces global precipitation estimates from passive microwave and infrared data at high spatial and temporal resolution,10.1175/1520-0450(2004)043<1403:CMCAOR>2.0.CO;2,
+xu2021gedi,year 2025 != 2021,Enhancing aboveground biomass density estimates in tropical forests using GEDI waveform data,10.1016/j.srs.2025.100286,0.644
+zhao2021accuracy,title similarity 0.53,"Accuracy assessment of GEDI terrain elevation, canopy height, and aboveground biomass density estimates in Japanese artificial forests",10.1016/j.srs.2024.100144,0.525
+asner2016canopy,year 2021 != 2016,RGB Indices and Canopy Height Modelling for Mapping Tidal Marsh Biomass from a Small Unmanned Aerial System,10.3390/rs13173406,0.477

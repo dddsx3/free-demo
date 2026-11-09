@@ -1,0 +1,439 @@
+%% P4 -- Computers & Geosciences (Elsevier) submission draft
+%% Manuscript type: research paper
+%% Build: pdflatex manuscript ; bibtex manuscript ; pdflatex manuscript ; pdflatex manuscript
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{url}
+
+\setlength{\emergencystretch}{2em}
+
+\journal{Computers \& Geosciences}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A dimensionless verification floor for model assessment: which accuracy claims can an observational archive actually resolve?}
+
+\author[1]{[AUTHOR GIVEN NAME] [AUTHOR SURNAME]\corref{cor1}}
+\ead{[AUTHOR EMAIL]}
+\author[1]{[AUTHOR GIVEN NAME] [AUTHOR SURNAME]}
+\author[2]{[AUTHOR GIVEN NAME] [AUTHOR SURNAME]}
+
+\affiliation[1]{organization={[AUTHOR AFFILIATION 1]}}
+\affiliation[2]{organization={[AUTHOR AFFILIATION 2]}}
+
+\cortext[cor1]{Corresponding author}
+
+\begin{abstract}
+Model assessment compares a simulated field, or an observation-based reference, against independent truth and reports an error metric. Whether the archive can resolve the discrepancy the evaluation is asked to detect is rarely checked, and never in a form comparable across variables. We present a dimensionless method whose inputs are three quantities an assessment already reports: the standard deviation $\sigma_d$ of the product--truth difference, the effective number of independent truth samples $n_{\mathrm{eff}}$, and the magnitude of the asserted claim. It returns $\Phi = 2.802\,\sigma_d/(\mathrm{claim}\sqrt{n_{\mathrm{eff}}}) = \mathrm{MDE}_{80}/\mathrm{claim}$, the ratio of the 80\,\% verification floor to the claim, where the constant encodes a two-sided test at $\alpha = 0.05$ with 80\,\% power and $n_{\mathrm{eff}}$ follows the Kish design effect. The output is a testability index and the largest claim the archive can support; $\Phi>1$ means the claim lies below the floor and cannot be verified, $\Phi<1$ that it can be, not that it is correct. Across five variables the method orders the domains: salinity 0.019, precipitation 0.043, soil moisture 0.24, sea-ice thickness 1.3--3.7 and regional biomass 2.71. For sea ice, whose floor is not a single number, two defensible kernels give 3.447 and 10.38 cm (a factor of 2.5--3.0); the ambiguity is derived in the Methods and carried into the interval. A $\pm 50\,\%$ perturbation of $\sigma_d$ and the claim leaves salinity, precipitation and soil moisture verifiable, sea ice unverifiable at its exponential-kernel bound, and biomass above unity except at the optimistic corner ($\Phi = 0.90$). The boundary is part of the method: one claim at a time, independent truth, and a reported correlation model. $\Phi>1$ says nothing about a study's value, and $\Phi<1$ is necessary but not sufficient -- the SMAP claim has $\Phi = 0.24$ and was met at 18 of 34 sites.
+\end{abstract}
+
+\begin{keyword}
+verification \sep statistical power \sep effective sample size \sep model assessment \sep sea-ice thickness \sep satellite validation
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+
+Model assessment rests on comparisons. A simulated thickness, temperature, salinity or carbon field is set against an observation-based product, and the difference is summarised as a bias, a root-mean-square error or a correlation. The same arithmetic runs in the other direction when the observation-based product is itself the object of evaluation: a retrieval, a reanalysis or a gridded reference is characterised before it is used to judge a model. In both directions the underlying statement is quantitative. A satellite retrieval is released with a target accuracy; a gridded record is published with a stated bias; a reanalysis is corrected by a fraction of a degree; a biomass map is calibrated to a stated root-mean-square error. Each such statement is, in effect, a hypothesis: that the difference between the product and the truth is smaller than some number, or larger than some other number. The scientific literature evaluates these statements in a well-established way, by comparing the product with independent measurements and reporting bias, standard deviation and root-mean-square difference \citep[e.g.,][]{loew2017validation,merchant2017uncertainty,taylor2001summarizing}.
+
+What that literature almost never asks is whether the comparison had any chance of resolving the statement in the first place. The question is a familiar one in other fields. Statistical power analysis has been standard in the behavioural and biomedical sciences for half a century \citep{cohen1992power,lenth2001some,nakagawa2007effect}, and a long series of audits has shown that a large fraction of published claims were never testable with the data used to support them \citep{sedlmeier1989do,ioannidis2005why,button2013power}. The conclusions of that literature are blunt: a non-significant result obtained with low power does not support the null, it merely fails to exclude it \citep{altman1995absence,greenland2016statistical}, and the practice of treating a threshold on a noisy estimate as a decision rule produces a literature in which the sign and the magnitude of reported effects are systematically distorted \citep{simmons2011falsepositive,mcshane2017statistical}. The statistical reform debate that followed \citep{wasserstein2016asa,benjamin2018redefine,amrhein2019scientists} has been conducted largely within disciplines that can increase their sample size by collecting more subjects.
+
+Model assessment cannot. The truth against which a simulated or observation-based field is judged is expensive, sparse and often one-dimensional: flight transects across an ocean basin, a few hundred soil-moisture stations, several thousand forest plots, a drifting array of profiling floats. The number of comparisons that can be made is not a matter of effort but of the geometry of the observing system, and the relevant quantity is therefore not the number of files but the number of independent pieces of information they contain. That distinction has its own literature. The effective number of degrees of freedom of a correlated field was formalised for climate diagnostics \citep{bretherton1999effective,zwiers1995taking}, the design effect for complex surveys goes back to \citet{kish1965survey}, and the ecological literature has long warned that replicated-looking samples drawn from a correlated landscape are pseudoreplicates \citep{hurlbert1984pseudoreplication,legendre1993spatial,dutilleul1993modifying}. Block and stationary bootstrap methods were developed precisely because the naive sample size overstates the information content of autocorrelated data \citep{kunsch1989jackknife,politis1994stationary,efron1979bootstrap}.
+
+These two strands -- power analysis and effective sample size -- are usually kept apart. The first is about how large an effect must be to be seen; the second is about how many independent observations one really has. Combining them yields a single question that can be posed of any model--truth or product--truth pair, with any units, in any domain: is the magnitude asserted in the claim larger than the smallest difference that this archive can resolve at a stated power? This paper argues that the answer can be expressed as one dimensionless number, that the number is computable from quantities that assessment studies already report, and that reporting it alongside an error metric turns a verdict into a statement about what the reference archive can and cannot decide. The number is presented here as a method for assessment, not as a result about any particular Earth system.
+
+The method has three inputs and one output,
+\begin{equation}
+\Phi \;=\; \frac{2.802\,\sigma_d}{\mathrm{claim}\,\sqrt{n_{\mathrm{eff}}}}
+\;=\;\frac{\mathrm{MDE}_{80}}{\mathrm{claim}},
+\label{eq:phi}
+\end{equation}
+where $\sigma_d$ is the standard deviation of the product--truth difference field, $n_{\mathrm{eff}}$ is the effective number of independent truth samples, ``claim'' is the magnitude that the statement asserts, and $\mathrm{MDE}_{80}=2.802\,\sigma_d/\sqrt{n_{\mathrm{eff}}}$ is the minimum detectable effect at 80\,\% power. The constant is not a convention: $2.802 = z_{0.975}+z_{0.80} = 1.959964+0.841621$, the sum of the two-sided 5\,\% critical value and the 80\,\% power quantile.
+
+The object that the method assesses is a single quantitative claim attached to a model field or to an observation-based reference used in model assessment: a thickness bias of 2\,\%, a soil-moisture accuracy of 0.04 m$^3$ m$^{-3}$, a salinity error below 0.2 PSU. Its inputs are the three quantities in Eq.~(\ref{eq:phi}), each of which a conventional assessment already reports or can derive: $\sigma_d$ from the difference field, $\mathrm{claim}$ from the stated accuracy or bias target, and $n_{\mathrm{eff}}$ from the geometry of the reference archive. Its output is a dimensionless testability index and, derived from it, two operational numbers: the independent sample size $n_{\mathrm{eff}}\Phi^2$ that would be required to test the claim at the stated power, and the largest claim $\mathrm{MDE}_{80}$ that the present archive can support. The output is a statement about the pair (claim, archive), not about the model, the product or the study that produced it.
+
+The applicability boundary is part of the method and is stated with it. First, one claim at a time: a study that asserts a bias, a variance and a trend has three claims and three values of $\Phi$. Second, independent truth: the reference must not be the data used to calibrate the field under test, or $n_{\mathrm{eff}}$ has no meaning. Third, a correlation model: $n_{\mathrm{eff}}$ is an assumption about the joint dependence of comparison errors, not a measurement, and the choice of model must be reported. Fourth, a single scale: the difference field, the claim and the correlation model must refer to the same geophysical quantity averaged over the same space and time. Where these conditions fail the method returns a qualified result or none, and the five domains below include two such cases.
+
+Section \ref{sec:criterion} derives the criterion and states what it does and does not measure. Section \ref{sec:methods} documents, domain by domain, where $n$, $\sigma_d$ and the claim come from, gives the example implementation, and treats at Methods level the one case in which the floor cannot be reduced to a single number. Section \ref{sec:results} reports the five values, their sensitivity and their ordering. Section \ref{sec:discussion} draws the boundary of interpretation, gives three counter-examples that show the criterion to be necessary but not sufficient, and lists the conditions under which the conclusions of this paper would have to be revised.
+
+Two features of the argument deserve emphasis at the outset, because they distinguish it from a claim of universal degeneracy. First, the result is a ranking, not a verdict on geoscience as a whole. Three of the five domains studied here have $\Phi \ll 1$: their claims are comfortably testable, and the bottleneck in those domains is observational accuracy rather than verification capacity. Second, the criterion is a statement about the relation between a claim and an archive, not about the worth of a study. A paper that cannot resolve a 2.7 cm thickness bias may still deliver the first year-round thickness record of its kind \citep{landy2022year}, and a mission whose global accuracy claim is only partly met may still be the best available source of soil moisture \citep{entekhabi2010soil,colliander2017validation}. $\Phi$ is a diagnostic of testability. It is silent on value, and it is deliberately silent on truth.
+
+\section{The method}
+\label{sec:criterion}
+
+\subsection{From a claim to a test}
+
+Let $d = P - T$ be the difference between a product $P$ and truth $T$ at a matched location and time, and let $\sigma_d$ be its standard deviation over the comparison domain. Let the archive provide $n_{\mathrm{eff}}$ independent samples of $d$, so that the standard error of the domain-mean difference is $\sigma_d/\sqrt{n_{\mathrm{eff}}}$. A claim asserts a magnitude $\delta$: for a bias claim, $\delta$ is the largest bias the product is said to have; for an accuracy claim, $\delta$ is the stated error bound; for a trend claim, $\delta$ is the stated rate.
+
+Testing the claim at two-sided significance $\alpha$ with power $1-\beta$ requires that the true difference be distinguishable from zero when it equals $\delta$:
+\begin{equation}
+\delta \;\ge\; \left(z_{1-\alpha/2}+z_{1-\beta}\right)\frac{\sigma_d}{\sqrt{n_{\mathrm{eff}}}} .
+\label{eq:mde}
+\end{equation}
+With $\alpha = 0.05$ and $1-\beta = 0.80$ the bracket is $2.802$. Dividing both sides of Eq.~(\ref{eq:mde}) by $\delta$ gives Eq.~(\ref{eq:phi}). The interpretation is direct: $\Phi$ is the number of times the archive's 80\,\% floor exceeds the claimed magnitude. $\Phi = 1$ is the watershed, $\Phi = 0.5$ means the claim is twice the floor and comfortably resolvable, $\Phi = 10$ means the claim would need a tenfold increase in independent information to become resolvable at the same power.
+
+The choice of $2.802$ rather than $1.96$ matters and is not cosmetic. A criterion built on $z_{0.975}$ alone would describe the threshold at which a difference becomes nominally significant at exactly 50\,\% power, which is the least useful operating point in a validation study: half of the real biases of that size would be missed. Using the sum of the two quantiles raises the floor by 43\,\% relative to the detection threshold and is the standard recommendation in the power literature \citep{cohen1992power,lenth2001some}. For a claim that is itself a null statement (``the product is unbiased to within $\delta$''), the appropriate test is an equivalence test, which at the same power requires the same constant; Eq.~(\ref{eq:mde}) therefore covers both the bias-detection and the accuracy-certification reading, which is why the five domains below can be compared even though their claims are phrased differently.
+
+\begin{figure}[t]
+\includegraphics[width=\textwidth]{figures/fig1_power.pdf}
+\caption{(a) Power to detect a true difference, expressed as a multiple $k$ of the claimed magnitude, for $\Phi$ between 0.05 and 4. The curve for $\Phi = 1$ passes through $k = 1$ at exactly 80\,\% power, which is the definition of the criterion; curves for $\Phi < 1$ reach 80\,\% at $k = \Phi < 1$, that is, below the claim, and curves for $\Phi > 1$ reach it only above the claim. (b) $\Phi$ as a function of $\sqrt{n_{\mathrm{eff}}}$ with isolines of $\sigma_d/\mathrm{claim}$ = 20, 200 and 600, with the five domains plotted; the vertical bar at $\sqrt{n_{\mathrm{eff}}} = 18$ is the sea-ice interval of Sect.~\ref{sec:kernel}.}
+\label{fig:power}
+\end{figure}
+
+Figure~\ref{fig:power}a shows what the criterion means in the currency of the power literature. For each value of $\Phi$, the curve gives the probability of detecting a true difference that is $k$ times the claim. The $\Phi = 1$ curve passes through 80\,\% power at $k = 1$ by construction; a claim with $\Phi = 0.25$ reaches the same power at $k = 0.25$, which is why it is verifiable, and a claim with $\Phi = 4$ needs a true difference four times larger than what it asserts before the test has an 80\,\% chance of finding it. The right-hand panel places the five domains in the $(\sqrt{n_{\mathrm{eff}}}, \Phi)$ plane: they fall along different isolines of $\sigma_d/\mathrm{claim}$ and are separated along the axis of independent information.
+
+\subsection{Effective sample size}
+
+The naive count $n$ of comparisons is almost never the information content of an archive. Neighbouring flight segments share weather, nearby stations share groundwater, adjacent plots share stand structure, and successive overpasses of a satellite sample the same water mass. Following the Kish design effect,
+\begin{equation}
+n_{\mathrm{eff}} \;=\; \frac{n^{2}}{\sum_{i}\sum_{j}\rho_{ij}},
+\label{eq:kish}
+\end{equation}
+where $\rho_{ij}$ is the correlation between the $i$-th and $j$-th comparison errors, with $\rho_{ii}=1$. For a single cluster of size $m$ with intra-cluster correlation $\rho$ and no correlation between clusters, Eq.~(\ref{eq:kish}) reduces to the familiar $n_{\mathrm{eff}} = n/(1+(m-1)\rho)$; for a field with correlation length $L$ over an area $A$ and a correlation time $\tau$ over a window $T$, it reduces to $n_{\mathrm{eff}} \approx (A/2\pi L^{2})(T/\tau)$, the number of decorrelation cells. Both limits appear below, and because they are approximations of the same object, the choice between them is reported explicitly for every domain rather than buried in a table of counts.
+
+Equation~(\ref{eq:kish}) is the formal statement of the pseudoreplication problem \citep{hurlbert1984pseudoreplication,legendre1993spatial}. It is also the reason the criterion can be computed at all: $\sigma_d$ and the claim are usually reported, and $n_{\mathrm{eff}}$ can be derived from the geometry of the observing system without access to the raw archive. That derivation is an assumption, not a measurement, and it is the largest single source of uncertainty in what follows; we test its consequences in Sect.~\ref{sec:sensitivity}. For the sea-ice domain it can also be checked against the archive rather than assumed: Sect.~\ref{sec:archive} measures both $\sigma_d$ and $n_{\mathrm{eff}}$ on the CCI--CS2SMOS record and reports what the measured values do to the verdict.
+
+\subsection{Properties}
+
+Four properties make $\Phi$ portable. It is dimensionless, because $\sigma_d$ and the claim carry the same units; a claim in metres, in PSU, in mm day$^{-1}$ or in Mg ha$^{-1}$ enters the same arithmetic. It is scale-free in the sense that multiplying both $\sigma_d$ and the claim by a constant leaves it unchanged, so it does not privilege variables with large dynamic range. It is monotone decreasing in independent information, $\Phi \propto n_{\mathrm{eff}}^{-1/2}$, which makes the design question (``how much more truth do we need?'') answerable in closed form: to bring $\Phi$ from its current value to unity requires multiplying $n_{\mathrm{eff}}$ by $\Phi^{2}$. And it is monotone increasing in the ratio $\sigma_d/\mathrm{claim}$, which separates the two physically distinct reasons a claim can be untestable: too few independent samples, or truth that is too coarse relative to what is asserted.
+
+That separation is the analytical core of the paper. A domain can fail on either axis. Sea-ice thickness fails mainly on the first ratio -- the truth is a one-dimensional flight track compared against a 25 km grid cell, so $\sigma_d = 0.65$ m against a claim of 2.7 cm, a ratio of 24 -- while forest biomass fails on both ($\sigma_d/\mathrm{claim} = 1.5$ with $n_{\mathrm{eff}} = 2.4$). Salinity and precipitation have ratios of 1.0 and 3.7 but effective sample sizes in the tens of thousands, and their $\Phi$ values are two orders of magnitude below the watershed. The criterion thus produces a diagnosis, not merely a verdict, and the diagnosis points to different remedies in different domains.
+
+Three limitations are intrinsic and are stated here rather than in a closing paragraph. First, Eq.~(\ref{eq:mde}) uses the normal approximation; for $n_{\mathrm{eff}}$ below about 10 the non-central $t$ distribution raises the constant by 10--20\,\% (Appendix~\ref{app:derivation}), which strengthens rather than weakens a $\Phi>1$ verdict. Second, the criterion assumes a single claim; a paper that makes many claims at once is exposed to multiplicity, and the criterion should then be applied to the strongest claim in the set or adjusted by the false-discovery machinery of \citet{benjamini1995controlling} and \citet{storey2002direct}. Third, and most importantly, $\Phi$ presupposes that $d$ measures what the claim is about. A perfectly powered test of the wrong quantity is still the wrong test, a point developed in Sect.~\ref{sec:boundary}.
+
+\section{Data and provenance}
+\label{sec:methods}
+
+\subsection{Harmonisation rules}
+\label{sec:harmonisation}
+
+Five domains are used. For each, three quantities must be established on a common footing before Eq.~(\ref{eq:phi}) can be applied: the number of independent truth samples $n_{\mathrm{eff}}$, the standard deviation of the product--truth difference $\sigma_d$, and the claimed magnitude. The harmonisation rule adopted here is strict and is applied identically in all five cases: the difference field, the claim and the correlation model must refer to the same geophysical quantity, in the same units, averaged over the same space and time scale. A claim about instantaneous 9 km soil moisture cannot be tested against daily station values; a claim about monthly basin-mean ice thickness cannot be tested against individual flight transects; a claim about annual biomass carbon cannot be tested against single-footprint lidar returns. Where a published claim is phrased at a different scale from the available truth, we re-express the claim at the scale of the truth and record the transformation, rather than silently comparing across scales.
+
+Table~\ref{tab:provenance} gives, for each domain, the raw count, the closure rule used to obtain $n_{\mathrm{eff}}$, the source of $\sigma_d$, the source of the claim and the resulting value. Every entry is traceable either to a peer-reviewed source or to a data product with a persistent identifier; entries that could not be traced are marked and excluded from the verdict rather than replaced by a plausible proxy.
+
+\begin{table}[t]
+\caption{Provenance of the three quantities that enter Eq.~(\ref{eq:phi}), by domain. ``Rule'' is the closure used to convert the raw count into $n_{\mathrm{eff}}$; the corresponding algebra is given in Appendix~\ref{app:closure}. The last two rows are reported for completeness and are not used in any verdict, because at least one of their three quantities could not be traced to a verifiable source.}
+\label{tab:provenance}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.1cm}>{\raggedright\arraybackslash}p{1.9cm}>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{1.7cm}>{\raggedright\arraybackslash}p{1.4cm}}
+\toprule
+Domain & Raw count & Rule for $n_{\mathrm{eff}}$ & $\sigma_d$ (source) & Claim (source) & $n_{\mathrm{eff}}$ \\
+\midrule
+Sea-ice thickness & 40\,084 ATM L1B granules, 2009--2019; 338 flight days & Sortie capacity: one independent segment per flight day at $L = 326$ km; 297 days plus 28.2 from IceBird 2019 & 0.65 m, measured CCI--IceBird/ATM difference, range 0.50--0.80 m & 0.027 m, 2\,\% of 1.36 m mean, mask-induced bias & 325.2 \\
+Soil moisture & 2\,842 stations in 71 networks (ISMN, July 2021) & Cluster design effect, $m = 40$ stations per network, $\rho = 0.5$ & 0.040 m$^3$ m$^{-3}$, SMAP ubRMSE target and observed & 0.040 m$^3$ m$^{-3}$, mission accuracy (ubRMSE) & 138.6 \\
+Sea-surface salinity & $\sim$1.56 $\times$ 10$^6$ Argo profiles over 10 years; 13\,000 per month & Area $\times$ time: $A/(2\pi L^2)\cdot T/\tau$ with $A = 3.6\times10^8$ km$^2$, $L = 333$ km, $\tau = 3$ months & 0.20 PSU, SMAP--buoy SD of 0.22 weekly and 0.17 monthly & 0.20 PSU, mission accuracy & 20\,668 \\
+Precipitation & 50\,000 gauges in the Chinese automatic network; 78\,000 in GPCC & Area $\times$ time: $A = 9.6\times10^6$ km$^2$, $L = 100$ km, $T = 1095$ d, \mbox{$\tau = 3$ d} & 3.0 mm d$^{-1}$, order of the daily IMERG--gauge difference & 0.82 mm d$^{-1}$, 20\,\% of the 4.1 mm d$^{-1}$ mean & 55\,768 \\
+Forest biomass & 39 plots in one region; 74\,860 GEDI L4A granules & Cluster design effect, $m = 39$, $\rho = 0.4$ & 45 Mg ha$^{-1}$, literature RMSE 39--94, median 45 & 30 Mg ha$^{-1}$, 20\,\% of the 150 Mg ha$^{-1}$ mean & 2.41 \\
+\midrule
+Forest biomass, global & GEDI L4A 74\,860 granules; $\sim$8\,000 plots reported & Cluster, $m = 30$, $\rho = 0.5$ & as above & as above & 516 (not assessable) \\
+Snow depth on sea ice & 174\,799 OIB snow-radar granules; 297 flight days & none: the product uses the same radar & 0.10 m, magnitude cited, not audited & 0.05 m, bias claim & not assessable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sea-ice thickness}
+
+Arctic sea-ice thickness is the most intensively argued case in the set. The product of interest is a monthly mean thickness field on a 25 km grid; the available truth consists of airborne electromagnetic and laser altimeter transects from Operation IceBridge \citep{kurtz2013sea,kurtz2011snow} and from the IceBird campaigns \citep{icebird_pangaea}, together with satellite altimetry retrievals whose own biases are the subject of a continuing literature \citep{laxon2013cryosat,ricker2014first,ricker2017weekly,sallila2019assessment,landy2022year}. The archive is large in files and small in information: 40\,084 ATM L1B granules span 338 flight days, but a single sortie crosses one or two ice regimes, so the capacity of the archive is set by the number of sorties and the decorrelation length, not by the granule count. The closure rule counts one independent segment per flight day at $L = 326$ km, giving 297 for the 2011--2019 campaigns plus 28.2 for IceBird, hence $n_{\mathrm{eff}} = 325.2$. The information collapse factor is 123, the largest in the set apart from salinity.
+
+The difference standard deviation is the one quantity in this paper that we measured rather than assembled from the literature: the CCI product against the IceBird and ATM truth gives $\sigma_d = 0.65$ m, with individual campaigns between 0.50 and 0.80 m. The claim is the bias magnitude that the product's documentation and its validation literature are concerned with, 2\,\% of the 1.36 m basin mean, that is 2.7 cm. That a 2\,\% bias is a meaningful scientific target is not in doubt: basin-mean thickness trends over the satellite era are of order 0.1--0.2 m per decade \citep{kwok2009thinning,laxon2013cryosat,stroeve2018arctic}, so a 2.7 cm systematic error is a fifth of a decade of change, and the discrepancy between altimetric and electromagnetic records is of the same order \citep{ricker2017weekly,sallila2019assessment}.
+
+\subsection{Sea-surface salinity}
+
+Sea-surface salinity has the opposite geometry. The domain is the global ocean, $A = 3.6\times10^{8}$ km$^2$; the decorrelation length of the salinity field is 300--400 km, consistent with the small-scale variability documented by \citet{vinogradova2013small} and with the interpolation scales used to map in situ data \citep{bingham2012interpolation}; and the decorrelation time is of order three months. The truth is the Argo array, roughly 13\,000 profiles per month and 1.56 million over a decade, which is an autonomous, globally distributed and repeatable system -- the opposite of a flight campaign. With $L = 333$ km and $\tau = 3$ months, the number of decorrelation cells over ten years is 20\,668, a collapse factor of 75 relative to the profile count but still four orders of magnitude above the biomass case. The difference standard deviation is 0.20 PSU, between the weekly value of 0.22 and the monthly value of 0.17 reported in the salinity validation literature \citep{meissner2011remote,bingham2012interpolation}, and the claim is the 0.2 PSU mission accuracy. Because both numbers are 0.2, $\sigma_d/\mathrm{claim} = 1$, and $\Phi$ is driven entirely by the effective sample size.
+
+\subsection{Precipitation}
+
+Precipitation is the best-instrumented of the five. Gauge networks are dense in populated regions: the Global Precipitation Climatology Centre holds 78\,000 stations of which about 51\,000 report monthly \citep{gpcc_v2022}, and the Chinese automatic network alone provides 50\,000 daily records. With $L = 100$ km for daily fields and $\tau = 3$ days, the decorrelation-cell count over $A = 9.6\times10^{6}$ km$^2$ and $T = 1095$ days is 55\,768, so the information collapse factor is 0.90: the gauge network is dense enough that almost every gauge is its own independent sample. The difference standard deviation of daily satellite estimates against gauges is of order 3 mm d$^{-1}$, the scale reported in intercomparisons of the IMERG, TMPA and CMORPH families \citep{huffman2007trmm,kidd2011status,tan2019imerg,huffman2020integrated,beck2017global,beck2019daily,sun2018review}. The claim used here is 20\,\% of the 4.1 mm d$^{-1}$ mean, 0.82 mm d$^{-1}$, the order of the biases documented in regional validations \citep{li2018evaluation}. The ratio $\sigma_d/\mathrm{claim} = 3.7$ is the second largest in the set, and yet the domain is comfortably verifiable, because independent information is abundant. This is exactly the case that a single-domain study of sea ice would miss.
+
+\subsection{Soil moisture}
+
+Soil moisture occupies an intermediate position. The International Soil Moisture Network provides 2\,842 stations in 71 networks \citep{dorigo2011international,dorigo2021international}, a genuinely global in situ resource; the product is SMAP at 9 km \citep{entekhabi2010soil}, whose accuracy target is an unbiased root-mean-square difference of 0.04 m$^3$ m$^{-3}$ \citep{colliander2017validation}. Stations within a network are not independent: they sample the same weather system and often the same soil column, and the sparse-network assimilation literature treats each network as roughly one degree of freedom per assimilation window \citep{gruber2018sparse}. With $m = 40$ stations per network and $\rho = 0.5$, Eq.~(\ref{eq:kish}) gives $n_{\mathrm{eff}} = 138.6$, a collapse factor of 20.5. Both $\sigma_d$ and the claim are 0.04 m$^3$ m$^{-3}$, so the ratio is 1 and the outcome is decided by $n_{\mathrm{eff}}$ alone. The strict variant, in which only the 18 core validation sites that meet the siting criteria are counted, gives $n_{\mathrm{eff}} = 18$ and $\Phi = 0.66$ -- still below the watershed, but no longer by an order of magnitude. That variant is retained because it shows how much of the verdict rests on the closure rule rather than on the physics.
+
+\subsection{Forest biomass}
+
+Forest biomass is the weakest case, and the only one in which the truth is not a network but a set of plots. GEDI provides footprint-level aboveground biomass density \citep{dubayah2020global,duncanson2022aboveground,gedi_l4a}, calibrated against field plots and allometric models \citep{chave2014improved,saatchi2011benchmark}. In a single region with 39 plots and intra-region correlation $\rho = 0.4$, Eq.~(\ref{eq:kish}) gives $n_{\mathrm{eff}} = 2.41$: the information collapse factor is 16, and the effective sample size is smaller than that of any other domain. The difference standard deviation is 45 Mg ha$^{-1}$, the median of the published range 39--94 Mg ha$^{-1}$ for regional validation \citep{duncanson2022aboveground,xu2021changes,saatchi2011benchmark}; the claim is 30 Mg ha$^{-1}$, 20\,\% of a 150 Mg ha$^{-1}$ mean. Both terms are unfavourable, which is why $\Phi = 2.71$ despite a claim that is, in absolute terms, generous.
+
+A global variant exists on paper -- about 8\,000 plots, which with $m = 30$ and $\rho = 0.5$ would give $n_{\mathrm{eff}} = 516$ and $\Phi = 0.18$ -- but the plot count and, more importantly, the number of plots not used in model training could not be verified from public documentation. Following the rule stated in Sect.~\ref{sec:harmonisation}, that variant is reported as not assessable and is used only in sensitivity discussion, never in the verdict. The distinction matters: a global biomass claim may well be testable, but this paper cannot demonstrate that it is, and it does not pretend to.
+
+\subsection{The kernel ambiguity: why sea ice can only be an interval}
+\label{sec:kernel}
+
+One domain does not reduce to a single number, and the reason is structural rather than a gap in the literature. The extended record of sea-ice thickness supports two correlation models of the difference field, both defensible, which give floors that differ by a factor of three. The first is an exponential kernel with $L = 326$ km fitted to the product's own spatial variability, which yields a floor of 10.38 cm for the archive design with eight sorties per campaign. The second is the empirical autocorrelation function of the product--truth difference field itself, whose measured values are $\rho(25\,\mathrm{km}) = 0.269$, $\rho(75\,\mathrm{km}) = 0.080$ and $\rho(150\,\mathrm{km}) \approx 0$; because the difference decorrelates four times faster than the field, the same archive yields a floor of 3.447 cm. Fig.~\ref{fig:kernel} shows both kernels and both floors.
+
+\begin{figure}[t]
+\includegraphics[width=\textwidth]{figures/fig5_kernel.pdf}
+\caption{(a) Two correlation models of the same difference field. The exponential kernel with $L = 326$ km describes the spatial variability of the thickness field; the empirical autocorrelation of the product--truth difference falls to 0.269 at 25 km and to zero by 150 km. (b) The verification floor implied by each kernel under two design assumptions. The claim is 2.7 cm. The floor ranges from 3.40 to 10.38 cm, a factor of 2.5 between the respective optima and of 3.0 at fixed archive design; $\Phi$ therefore cannot be quoted as a single number.}
+\label{fig:kernel}
+\end{figure}
+
+This ambiguity cannot be removed by collecting more data, and that is the point. The two kernels answer different questions: the exponential kernel describes how much independent information the field contains, the empirical kernel describes how much independent information the difference contains. Both are legitimate, neither is a mistake, and which one is appropriate depends on whether the claim is about the field's representativeness or about the retrieval's systematic error. A validation study that adopted one silently would report a floor that another equally careful study could dispute by a factor of three, with no datum able to settle the dispute. We therefore treat the kernel choice as a Methods-level commitment, state both results wherever the sea-ice number appears, and report $\Phi$ as the interval spanned by the two floors. The interval is not a confession of ignorance about the data; it is an honest description of the model space.
+
+Two further design variants were computed to close the space. If the archive is optimised -- roughly eight sorties per campaign concentrated in the months that matter -- the exponential kernel gives 8.40 cm and the empirical kernel 3.406 cm, a factor of 2.5. If instead each campaign contributes 27 sorties, the exponential kernel gives 10.38 cm. Table~\ref{tab:kernel} lists the five members of the family with their floors and $\Phi$ values. The complete family spans 3.40--10.38 cm, and the interval quoted in this paper, 3.447--10.098 cm ($\Phi = 1.28$--$3.74$, reported as 1.3--3.7), is the sub-family of physically realised designs. Every member of the family lies above the 2.7 cm claim. The verdict is kernel-independent even though the number is not, which is a stronger statement than either number alone. The 27-sortie variant reaches 10.38 cm ($\Phi = 3.84$) and is retained in Table~\ref{tab:kernel} for completeness; the reported interval is anchored to the Kish equal-weight count of the archive, which is the closure used for every other domain.
+
+\begin{table}[t]
+\caption{The sea-ice floor as a function of correlation kernel and archive design. ``Optimised'' is the allocation of roughly eight sorties per campaign; ``Kish archive'' is the equal-weight count of 297 flight days plus IceBird; ``archive $m = 8$'' is the realised design with eight sorties per campaign. $\Phi$ is the floor divided by the 2.7 cm claim.}
+\label{tab:kernel}
+\begin{tabular}{llcc}
+\toprule
+Kernel & Design & Floor (cm) & $\Phi$ \\
+\midrule
+Empirical difference-field ACF & Optimised & 3.406 & 1.26 \\
+Empirical difference-field ACF & Archive, $m = 8$ & 3.447 & 1.28 \\
+Exponential, $L = 326$ km & Optimised & 8.40 & 3.11 \\
+Exponential, $L = 326$ km & Kish archive & 10.098 & 3.74 \\
+Exponential, $L = 326$ km & Archive, $m = 8$ & 10.38 & 3.84 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sensitivity protocol}
+\label{sec:sensitivity}
+
+Each of $\sigma_d$ and the claim was perturbed by $\pm 50\,\%$ in five steps, giving a 25-cell grid per domain, and the same grid was applied to the two sea-ice kernel bounds. Two summaries are reported: the axis-wise range, in which one quantity varies while the other is held at its nominal value, and the joint range over the full box. The $\pm 50\,\%$ width was chosen because it exceeds the spread of the published $\sigma_d$ values in three of the five domains (0.50--0.80 m for sea ice, 39--94 Mg ha$^{-1}$ for biomass, 0.17--0.22 PSU for salinity) and because it brackets the plausible range of a claim that is itself stated as an order-of-magnitude target. Because $\Phi$ is linear in $\sigma_d$ and inverse-linear in the claim, the sensitivity is analytic and requires no simulation; the grids in Fig.~\ref{fig:sensitivity} are computed directly from Eq.~(\ref{eq:phi}).
+
+\subsection{Example implementation}
+\label{sec:implementation}
+
+Because the method is arithmetic on published inputs, its example implementation is short and complete, and it is part of the submission rather than an illustration of it. The core implementation has two modules. \texttt{code/phi\_core.py} holds the three closures of Appendix~\ref{app:closure}, the constants of Eq.~(\ref{eq:phi}), the five domain records of Table~\ref{tab:provenance} and the kernel family of Table~\ref{tab:kernel}; it evaluates Eq.~(\ref{eq:phi}) and writes the seven derived tables in \texttt{data/}. \texttt{code/run\_all.py} is the entry point: it runs the arithmetic, compares every headline number against the value printed in this manuscript and fails if any moves by more than 0.1\,\%, regenerates the seven figures in \texttt{figures/}, and builds the PDF. A third script, \texttt{code/verify\_refs.py}, resolves the bibliography against Crossref and DataCite and is run on demand because it needs network access.
+
+No observational granule is downloaded and no number is typed by hand: the five values of $\Phi$, the four kernel bounds, the 25-cell sensitivity grids and the ranking figure are all generated from a single CSV. The provenance table (Table~\ref{tab:provenance}) is a transcription of that CSV. The implementation therefore serves three functions that a methods paper requires: it states the method unambiguously, it reproduces every reported number, and it can be applied to a new domain by adding one row to the input table.
+
+The implementation is an example, not a general-purpose library. For the five domain records it does not acquire data, estimate a correlation function, or choose a claim; those three inputs remain the responsibility of the assessor, and the method is deliberately silent about how they should be obtained. A separate worked example, \texttt{code/archive\_example.py}, takes the one step that the five records leave open: it forms the cell-level difference of two real product fields, estimates the autocorrelation of that difference along each grid axis, and reports the resulting $n_{\mathrm{eff}}$ and $\Phi$, so that the step from a product pair to an $n_{\mathrm{eff}}$ is shown rather than asserted. It is an example of that step and not a recommendation of a single estimator. What the code fixes is the arithmetic and the bookkeeping: which closure produced which $n_{\mathrm{eff}}$, which kernel produced which floor, and which number in the text depends on which row of the input table.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{The five values and their ranking}
+
+Table~\ref{tab:master} and Fig.~\ref{fig:ranking} give the result. Salinity has $\Phi = 0.019$; precipitation 0.043; soil moisture 0.24; sea-ice thickness 1.3--3.7; regional biomass 2.71. The five values span more than two orders of magnitude, and the watershed at $\Phi = 1$ falls between soil moisture and sea ice. Three domains are verifiable with their existing truth archives, two are not. The sea-ice result is a statement about the archive, not about the product: $\Phi$ measures the resolution that the truth archive can bring to a claim of a given magnitude, and it is a separate question whether a particular product's declared uncertainty is internally consistent and can be apportioned among its channels. A product may be judgeable in that second sense while the archive remains unable to resolve a sub-decimetre accuracy claim; the two findings do not conflict, because they are answers to different questions about different objects.
+
+\begin{table}[t]
+\caption{Master table. $\sigma_d$ and the claim are in the units of the domain; $\mathrm{MDE}_{80}$ is the 80\,\% verification floor in the same units; $\Phi = \mathrm{MDE}_{80}/\mathrm{claim}$. For sea ice, $\Phi$ is the interval spanned by the two correlation kernels of Sect.~\ref{sec:kernel}; the two component values are 1.28 (empirical difference-field autocorrelation, 3.447 cm) and 3.74 (exponential kernel, 10.098 cm). The two archive rows are the same domain under a fourteen-winter design (Sect.~\ref{sec:archive}) and are not additional domains: the shared-sensor row is the optimistic end, in which the common CryoSat-2 sampling cancels in part, and the independent row is the conservative end. Neither archive row enters the five-domain ranking.}
+\label{tab:master}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.0cm}ccccc>{\raggedright\arraybackslash}p{1.7cm}@{}}
+\toprule
+Domain & $n_{\mathrm{eff}}$ & $\sigma_d$ & Claim & $\mathrm{MDE}_{80}$ & $\Phi$ & Verdict \\
+\midrule
+Sea-surface salinity & 20\,668 & 0.20 PSU & 0.20 PSU & 0.0039 PSU & 0.019 & verifiable \\
+Precipitation & 55\,768 & 3.0 mm d$^{-1}$ & 0.82 mm d$^{-1}$ & 0.036 mm d$^{-1}$ & 0.043 & verifiable \\
+Soil moisture & 138.6 & 0.040 m$^3$ m$^{-3}$ & 0.040 m$^3$ m$^{-3}$ & 0.0095 m$^3$ m$^{-3}$ & 0.24 & verifiable \\
+Sea-ice thickness (campaign) & 325.2 & 0.65 m & 0.027 m & 0.101 m & 1.3--3.7 & not verifiable \\
+Sea ice, 14-winter archive, shared & 4\,498 & 0.389 m & 0.027 m & 0.0163 m & 0.60 & verifiable$^{\dagger}$ \\
+Sea ice, 14-winter archive, independent & 4\,498 & 0.65 m & 0.027 m & 0.0272 m & 1.01 & boundary \\
+Forest biomass (regional) & 2.41 & 45 Mg ha$^{-1}$ & 30 Mg ha$^{-1}$ & 81.3 Mg ha$^{-1}$ & 2.71 & not verifiable \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+{\scriptsize $^{\dagger}$Optimistic end only: CCI and CS2SMOS share the CryoSat-2 sampling, so the difference understates an independent error (Sect.~\ref{sec:archive}). At the independent end the same design gives $\Phi = 1.01$.}
+
+\end{table}
+
+\begin{figure}[t]
+\includegraphics[width=\textwidth]{figures/fig2_ranking.pdf}
+\caption{The ranking. $\Phi$ is plotted on a logarithmic axis; the dashed line is $\Phi = 1$ and the shaded region marks claims that lie below the verification floor of their archive. Sea-ice thickness is drawn as an interval because its floor depends on the correlation kernel (Sect.~\ref{sec:kernel}); the marker inside the interval is the geometric mean. Values are those of Table~\ref{tab:master}.}
+\label{fig:ranking}
+\end{figure}
+
+The ranking is not the ranking of observational effort. Sea ice has the largest and most expensive truth archive in the set, in absolute terms -- two decades of airborne campaigns, tens of thousands of granules -- and it is the least verifiable case. Precipitation has the cheapest truth, a rain gauge, and it is the second most verifiable. What orders the five domains is not how much was observed but how much independent information the observations contain per unit of asserted magnitude, which is precisely the content of Eq.~(\ref{eq:phi}).
+
+\subsection{What the criterion measures in each domain}
+
+Figure~\ref{fig:floor} separates the two axes. The horizontal axis is the claim, the vertical axis is the floor, and the three diagonals are $\Phi = 0.1$, $1$ and $10$. A domain in the lower-left triangle is verifiable; a domain above the $\Phi = 1$ line is not. The five points distribute themselves along the two dimensions in a way that explains the verdicts.
+
+\begin{figure}[t]
+\includegraphics[width=0.62\textwidth]{figures/fig3_floor.pdf}
+\caption{Verification floor against claimed magnitude, both in domain units and both on logarithmic axes. The diagonal lines are $\Phi = 0.1$, $1$ and $10$; the shaded region is the unverifiable side. Salinity and precipitation sit far below the watershed because their claims are large relative to the floor; soil moisture sits just below because its claim equals its floor but its effective sample size is 139; sea ice and biomass sit above because their floors exceed their claims.}
+\label{fig:floor}
+\end{figure}
+
+Sea ice is the extreme case of the ratio axis: $\sigma_d/\mathrm{claim} = 24$, because the truth is a track and the claim is about a grid cell. Its effective sample size, 325, is not small in absolute terms -- it is 135 times larger than that of regional biomass -- but it is nowhere near the 4\,549 that would be required to test a 2.7 cm bias at 80\,\% power. The corresponding design statement is blunt: to verify a 2\,\% thickness bias with the current difference standard deviation, the archive would need roughly fourteen times the independent capacity of everything flown between 2009 and 2019, or a reduction of $\sigma_d$ to about 0.16 m, or a claim an order of magnitude larger. The first is impossible, the second is what future missions aim at, and the third is a scientific choice.
+
+Salinity is the extreme case of the other axis. Its $\sigma_d/\mathrm{claim}$ is 1, and its floor is 0.0039 PSU against a 0.2 PSU claim: the archive could resolve a claim fifty times smaller than the one currently made. Even the most conservative time scale -- a single month instead of a decade, which reduces $n_{\mathrm{eff}}$ to 517 -- leaves $\Phi = 0.12$, still an order of magnitude below the watershed. Salinity is therefore not merely verifiable, it is over-instrumented relative to its claims, and the sensible research question in that domain is not whether a 0.2 PSU error can be detected but whether a smaller one can be.
+
+Precipitation occupies a middle position with an unusual signature. Its $\sigma_d/\mathrm{claim}$ ratio, 3.7, is the second largest in the set, so the truth is coarse relative to the claim; yet its $\Phi$ is 0.043 because the gauge network is so dense that the information collapse factor is 0.90. This is the cleanest demonstration that the two axes are independent: a domain can have a poor signal-to-noise ratio and still be highly verifiable, provided that the independent sample size is large. It also explains why precipitation validation papers can afford to argue about 10\,\% biases \citep{beck2019daily,li2018evaluation,beck2017global} while sea-ice papers cannot.
+
+Soil moisture is the marginal case, and the most instructive one. With $\sigma_d$ equal to the claim and $n_{\mathrm{eff}} = 138.6$, $\Phi = 0.24$: verifiable, but only by a factor of four. Under the strict 18-site closure the value rises to 0.66, and under a pessimistic intra-network correlation of 0.8 it rises above 0.9. Soil moisture therefore sits close enough to the watershed that the closure rule, rather than the physics, decides the verdict -- the opposite of the salinity case, where no plausible closure moves the answer. The domain is a warning against treating any $\Phi$ near unity as a settled result.
+
+Biomass is unverifiable for the opposite reason to sea ice: not because the truth is coarse in absolute terms -- 45 Mg ha$^{-1}$ against a 150 Mg ha$^{-1}$ mean is a 30\,\% relative error, comparable to many products -- but because 39 plots collapse to 2.4 independent samples. A regional biomass claim cannot be tested with 39 plots whatever their quality, and the arithmetic is unforgiving: reaching $\Phi = 1$ would require $n_{\mathrm{eff}}$ of 17.7, that is about 260 plots in the same region at the same correlation, or a claim of 81 Mg ha$^{-1}$.
+
+\subsection{Sensitivity}
+
+Figure~\ref{fig:sensitivity} and Table~\ref{tab:sensitivity} report the $\pm 50\,\%$ grids. The verdicts separate cleanly into three classes. Salinity, precipitation and soil moisture never approach $\Phi = 1$ anywhere in the box: their maxima are 0.058, 0.130 and 0.714 respectively, all obtained at the corner where $\sigma_d$ is 50\,\% high and the claim 50\,\% low. Sea-ice thickness at its exponential-kernel bound never falls below $\Phi = 1$: its minimum, at the opposite corner, is 1.25. Regional biomass does cross, reaching 0.90 at that corner, and so does sea ice at its empirical-kernel bound, reaching 0.43.
+
+\begin{figure}[t]
+\includegraphics[width=\textwidth]{figures/fig4_sensitivity.pdf}
+\caption{Sensitivity of $\Phi$ to $\pm 50\,\%$ perturbations of $\sigma_d$ (vertical axis) and of the claim (horizontal axis). Colour is $\log_{10}\Phi$ with white at $\Phi = 1$; the black contour in the biomass panel is the $\Phi = 1$ line and the ranges printed below each panel are the minima and maxima over the 25-cell grid. Salinity, precipitation and soil moisture never approach the watershed; sea ice at its exponential-kernel bound never crosses it; biomass and the empirical-kernel sea-ice bound do.}
+\label{fig:sensitivity}
+\end{figure}
+
+\begin{table}[t]
+\caption{Sensitivity summary. ``Axis-wise'' varies one quantity at a time over $\pm 50\,\%$; ``joint'' is the full 25-cell box. The two rows below the rule give the alternative sea-ice kernel bound and the strict 18-site soil-moisture variant, which are kept out of the main ranking but bear on its robustness.}
+\label{tab:sensitivity}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.6cm}ccc>{\raggedright\arraybackslash}p{2.2cm}@{}}
+\toprule
+Domain & $\Phi$ nominal & Axis-wise range & Joint range & Robustness \\
+\midrule
+Sea-surface salinity & 0.019 & 0.0097--0.039 & 0.0065--0.058 & robustly verifiable \\
+Precipitation & 0.043 & 0.022--0.087 & 0.014--0.130 & robustly verifiable \\
+Soil moisture & 0.24 & 0.119--0.476 & 0.079--0.714 & robustly verifiable \\
+Sea-ice thickness (exponential) & 3.74 & 1.87--7.48 & 1.25--11.2 & robustly not verifiable \\
+Forest biomass & 2.71 & 1.35--5.42 & 0.90--8.13 & flips at optimistic corner \\
+\midrule
+Sea-ice, empirical-kernel bound & 1.28 & 0.64--1.92 & 0.43--3.83 & flips at optimistic corner \\
+Soil moisture, 18-site strict variant & 0.66 & 0.33--1.32 & 0.22--1.98 & flips \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The asymmetry between the two sea-ice bounds is the most consequential result in the table. At the exponential-kernel bound the claim is unverifiable under every perturbation of the box; at the empirical-kernel bound a simultaneous 50\,\% reduction of $\sigma_d$ and 50\,\% increase of the claim would bring the criterion below unity. The verdict for sea ice therefore survives the perturbation only if the correlation model is the conservative one. This is stated as a falsification condition in Sect.~\ref{sec:falsification}: a defensible demonstration that $\sigma_d$ for monthly gridded thickness is near 0.3 m rather than 0.65 m would overturn the interval's lower bound and, with it, the claim that sea ice is unconditionally unverifiable.
+
+\subsection{Four diagnostics that the arithmetic exposes}
+
+Four numbers in the calculation are worth isolating because they are not usually reported in validation papers. The first is the information collapse factor $n/n_{\mathrm{eff}}$, which is 123 for sea ice, 20.5 for soil moisture, 16.2 for biomass, 75 for salinity and 0.90 for precipitation. A paper that reports 40\,084 granules has, for the question at hand, 325 samples; a paper that reports 50\,000 gauges has 55\,768. The second is the floor in absolute units, 10.1 cm of ice, 0.0095 m$^3$ m$^{-3}$ of soil moisture, 0.0039 PSU of salinity, 0.036 mm d$^{-1}$ of rain and 81 Mg ha$^{-1}$ of biomass, which converts an abstract ratio into a statement a reader can judge. The third is the sample size that would be required to verify the current claim, $n_{\mathrm{eff}}\Phi^{2}$, which is 4\,549 for sea ice, 17.7 for biomass, 7.85 for soil moisture and 105 for precipitation. The fourth is the claim that would be verifiable with the current archive, $\mathrm{MDE}_{80}$, which is the direct answer to the question ``what may we legitimately assert?''.
+
+These four numbers turn a verdict into a research agenda, and the agendas differ by domain. Sea ice needs either a coarser claim or a truth that can be averaged at the product's footprint; biomass needs more independent plots, not better plots; soil moisture needs either denser networks or a claim stated at the scale the networks can support; salinity and precipitation need nothing except to keep making the claims they make. The criterion does not tell any of these domains to stop working. It tells each of them what kind of work would make its claims testable.
+
+\subsection{What the archive actually supplies}
+\label{sec:archive}
+
+Sect.~\ref{sec:criterion} treated $n_{\mathrm{eff}}$ as a quantity that can be derived from the geometry of an observing system. For sea ice it can also be measured, and the measurement matters because it turns the closure from an assumption into an input with an independent source. We subtract the monthly CCI thickness field from the monthly CS2SMOS field cell by cell wherever both are defined -- about 18\,000 of the $432\times432$ cells in a typical month -- and take the standard deviation of the difference for each of the 43 winter months in which the two products overlap, 2011--2024. The median monthly $\sigma_d$ is 0.389 m (range 0.284--0.552 m; root-mean-square over all months 0.461 m). The same difference field gives the correlation structure: along each grid axis we compute the empirical autocorrelation to 30 lags, form the bandwidth factor $\kappa = 1+2\sum_k \rho(k)$ up to the first non-positive value, and divide the valid cell count by $\kappa_x\kappa_y$. For 2019-04, $\kappa_x = 7.69$ and $\kappa_y = 7.07$ over 18\,033 cells, giving $n_{\mathrm{eff}} = 331.8$; April months give 311--394, November gives 150 (Fig.~\ref{fig:acf}).
+
+The measured count agrees with the design value of 325.2 to 2\,\%, and that is the whole of what the agreement supports: the sortie-capacity closure is not arbitrary, but neither has the criterion been validated. What the archive does change is the verdict, and Fig.~\ref{fig:design} shows how. Fourteen winters, counted as one independent month each, give $n_{\mathrm{eff}} = 4\,498$; 43 months pooled give 13\,816. With the measured $\sigma_d$ the sea-ice $\Phi$ falls from 2.24 for a single campaign to 0.60 for the fourteen-winter archive; with the independent airborne value of 0.65 m it falls from 3.74 to 1.006, from ``not verifiable'' to exactly at the boundary. The archive reaches $\Phi<1$ at $n_{\mathrm{eff}} > 1\,632$ if $\sigma_d = 0.389$ m, and at $n_{\mathrm{eff}} > 4\,692$ if $\sigma_d = 0.65$ m. The binding quantity is the number of independent units, not the 2.7 cm claim: the claim is not too small, the archive is too short.
+
+Two features of the measurement limit how it may be used, and both are carried into Table~\ref{tab:master}. First, CCI and CS2SMOS both ingest CryoSat-2, so a mask-related difference between them is common to both products and cancels in part when they are subtracted; 0.389 m is therefore the optimistic end, and the airborne 0.65 m is the independent end. The campaign value $\Phi = 2.24$ uses the optimistic end and is still above unity, but the fourteen-winter verdict crosses unity between the two ends, so both are reported rather than the favourable one. Second, $n_{\mathrm{eff}}$ has a seasonal floor: November gives 150 against 311--394 in April, because the early-winter field is more continuous. A claim that must hold in early winter therefore needs a longer record than the annual figure suggests. The difference field also grows with thickness -- $\sigma_d$ rises from 0.350 m in the 0--1 m bin to 1.263 m above 4 m in 2019-04 -- so thin ice is the easiest part of the domain to verify, which is the opposite of the intuition that thick ice is the better-observed one.
+
+\begin{figure}[t]
+\includegraphics[width=0.62\textwidth]{figures/fig6_design.pdf}
+\caption{The sea-ice verdict as a function of design rather than of claim. $\Phi$ is drawn from Eq.~(\ref{eq:phi}) with the 2.7 cm claim for the two ends of the measured $\sigma_d$: 0.389 m, the CCI--CS2SMOS difference, in which the shared CryoSat-2 sampling cancels in part, and 0.65 m, the airborne product--truth difference. Circles mark the three designs of the archive: one campaign (325.2 independent units), fourteen winters counted as one month each (4\,498) and 43 pooled months (13\,816). The fourteen-winter point crosses $\Phi = 1$ between the two $\sigma_d$ ends; no change of claim moves the campaign point across.}
+\label{fig:design}
+\end{figure}
+
+\begin{figure}[t]
+\includegraphics[width=0.62\textwidth]{figures/fig7_acf.pdf}
+\caption{Empirical autocorrelation of the CCI--CS2SMOS difference field for 2019-04, along the two grid axes. The integral bandwidth factors are $\kappa_x = 7.69$ (192 km) and $\kappa_y = 7.07$ (177 km), which with 18\,033 valid cells give $n_{\mathrm{eff}} = 331.8$. This is the product--product difference used to count independent units; it is not the product--truth difference whose autocorrelation sets the sea-ice floor in Sect.~\ref{sec:kernel}, and the two must not be read as the same curve.}
+\label{fig:acf}
+\end{figure}
+
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Why a ranking is more useful than a verdict}
+
+The most tempting reading of these results is that geoscientific claims are generally untestable. That reading is wrong, and the five-domain design was chosen to make it wrong: three of the five domains are comfortably verifiable, one is marginally so, and only one -- sea ice, the case that motivated the study -- is not. Had we examined sea ice alone, as the earlier single-domain work did, we would have concluded that verification capacity is the universal bottleneck. The cross-domain comparison refutes that conclusion, and the refutation is the substance of the paper.
+
+What survives is a conditional law. $\Phi > 1$ holds when the truth is one-dimensional or plot-based, so that $\sigma_d$ is large relative to the claim, and when the independent capacity of the archive is small. It fails when the truth is a dense, autonomous network that can be averaged at the product's footprint. The physical variable matters less than the geometry of its truth system: salinity and sea ice have almost the same decorrelation length, 333 km against 326 km, and differ by a factor of nearly 200 in $\Phi$ because one is sampled by a global array over a decade and the other by 297 spring flight days. That is the operational content of the ranking, and it is more useful to a mission planner than any single verdict.
+
+\subsection{The boundary of interpretation}
+\label{sec:boundary}
+
+$\Phi > 1$ does not mean that a study is worthless, that its data are bad, or that its authors are careless. It means that a particular quantitative claim has no test behind it in the archive as it stands. Three examples make the distinction concrete.
+
+\citet{landy2022year} produced a year-round satellite thickness record by combining CryoSat-2 and SMOS; the record resolves seasonal cycles and interannual change, and its value does not depend on whether a 2.7 cm systematic bias can be detected. A claim of that kind, about the existence and timing of a seasonal cycle, has a different claim magnitude from a 2\,\% bias claim, and a much larger $\Phi^{-1}$. The criterion applies to claims, not to papers, and different claims in the same paper can have different verdicts.
+
+Conversely, $\Phi < 1$ does not mean that a claim is true. The Soil Moisture Active Passive mission specified an accuracy of 0.04 m$^3$ m$^{-3}$ \citep{entekhabi2010soil}, and the core-site validation found that this requirement was met at 18 of 34 sites \citep{colliander2017validation}. With $\Phi = 0.24$ the archive could decide the question, and it decided it in the negative for half the network. The same structure appears in precipitation: the IMERG family was reported at 0.210 mm h$^{-1}$ against a gauge reference of 0.176 mm h$^{-1}$ over China \citep{li2018evaluation}, a bias well above the 0.82 mm d$^{-1}$-equivalent claim and far above the 0.036 mm d$^{-1}$ floor. In both cases the criterion said ``decidable'', and the decision was ``the claim fails''. Power is necessary for a verdict, not sufficient for a true one; the distinction is old in statistics \citep{altman1995absence,greenland2016statistical} and is the reason $\Phi$ is described throughout as a testability index rather than a truth index.
+
+A second failure mode is more subtle and more dangerous: a well-powered test of the wrong quantity. Global biomass provides the example. If the roughly 8\,000 plots that are said to exist were all independent of the calibration data, the closure would give $\Phi = 0.18$ and the global claim would look comfortably testable. But a large fraction of those plots are the very data used to fit the GEDI models \citep{duncanson2022aboveground}, so the comparison is not between a product and independent truth but between a product and its own training set. The effective sample size is then not small; it is undefined in the intended sense, and no amount of arithmetic rescues it. That is why the global biomass variant is marked not assessable in Table~\ref{tab:provenance} rather than assigned a favourable $\Phi$: an index computed from a leaky truth is worse than no index at all.
+
+\subsection{Relation to existing frameworks}
+
+The criterion is a composition of well-established pieces, and it is worth being explicit about which piece does what. The numerator is the minimum detectable effect of the power literature \citep{cohen1992power,lenth2001some,nakagawa2007effect}, inverted so that the effect is given and the required sample size is the question. The denominator's square root is the Kish design effect \citep{kish1965survey}, the standard correction for clustered or correlated sampling. The spatial and temporal versions of that correction are the effective-degrees-of-freedom machinery of climate diagnostics \citep{bretherton1999effective,zwiers1995taking} and the block-resampling literature that grew out of it \citep{kunsch1989jackknife,politis1994stationary}. The pseudoreplication warning is the ecological counterpart \citep{hurlbert1984pseudoreplication,legendre1993spatial,dutilleul1993modifying}. The validation-practice literature supplied the vocabulary of product--truth comparison, representativeness and uncertainty \citep{loew2017validation,merchant2017uncertainty,taylor2001summarizing}.
+
+What is new is not any ingredient but the ratio, and the uses to which the ratio can be put. Validation studies report error metrics; mission requirements are stated as accuracy targets; both are silent on whether the two are commensurate. $\Phi$ makes the comparison explicit and dimensionless, so that a sea-ice paper and a soil-moisture paper can be compared on the same axis. In model assessment it answers a question that precedes the usual metrics: whether the observational reference behind an evaluation can adjudicate the error that the evaluation attributes to the model. It also makes the design question quantitative in a way that the effective-sample-size literature alone does not: the statement ``we need $\Phi^{2}$ times more independent truth'' is a budget line, not a caveat.
+
+The criterion is also complementary to, rather than a substitute for, the multiple-testing machinery that now accompanies large validation exercises. A product evaluated against twenty variables makes twenty claims, and at $\alpha = 0.05$ one of them will appear significant by construction \citep{benjamini1995controlling,storey2002direct}. $\Phi$ addresses a different failure: not the claim that is accepted too readily, but the claim that could never have been rejected. The two corrections are multiplicative in spirit and should be applied together in any systematic validation.
+
+\subsection{Falsification conditions}
+\label{sec:falsification}
+
+The conclusions of this paper are testable, and the following observations would each require them to be revised. They are stated with the specific numerical thresholds that would trigger a change, so that they are not self-sealing.
+
+F1. A defensible measurement of $\sigma_d$ for monthly gridded sea-ice thickness near 0.30 m rather than 0.65 m would bring the exponential-kernel $\Phi$ to 1.73 and the empirical-kernel $\Phi$ to 0.59. The sea-ice verdict would then become conditional on the kernel, and the paper's headline interval would have to be withdrawn.
+
+F2. A demonstration that the empirical difference-field autocorrelation is the appropriate kernel for bias claims -- for instance by showing that the product's systematic error decorrelates at the observed 25--75 km scale while its representativeness error does not -- would move the sea-ice $\Phi$ to 1.28 and, combined with F1, below unity.
+
+F3. A verified count of at least 500 independent, non-training global biomass plots, together with the stated 45 Mg ha$^{-1}$ difference standard deviation, would give $\Phi = 0.18$ for the global claim and would remove biomass from the unverifiable class. The regional verdict would stand.
+
+F4. A re-derivation of the soil-moisture closure that puts independent information below 8 samples -- for example by showing that intra-network correlation exceeds 0.9 -- would raise $\Phi$ above 1 and move soil moisture across the watershed.
+
+F5. A salinity accuracy requirement below 0.012 PSU, or a precipitation requirement below 0.036 mm d$^{-1}$, would move those domains from verifiable to unverifiable. No such requirement exists in the current literature, which is itself evidence that the two domains are claim-limited rather than archive-limited.
+
+F6. A demonstration that the 2.802 constant is inappropriate because validation claims are one-sided would lower the floor by 30\,\% ($z_{0.95}+z_{0.80} = 2.486$); sea-ice $\Phi$ would become 1.12--3.32 and no verdict would change. This condition is included to show that the choice of constant, unlike the choice of kernel, is robust.
+
+\subsection{Limitations}
+
+Four limitations deserve statement. First, four of the five $\sigma_d$ values are literature-based rather than measured in this study; only the sea-ice value was computed from a difference field. The $\pm 50\,\%$ grids are the response to this, and they show that the three verifiable domains are insensitive to it while the two unverifiable ones are not. Second, the closure rules are assumptions. The sortie-capacity rule for sea ice and the cluster rule for biomass are the two that matter most, and both are stated with their parameters so that a reader who disagrees can recompute. Third, the criterion uses the normal approximation and a fixed power of 80\,\%; both are conventions, and Appendix~\ref{app:derivation} shows how the numbers change under alternatives. Fourth, the criterion evaluates one claim at a time. A paper that makes a claim about bias, a claim about variance and a claim about a trend has three different $\Phi$ values, and the habit of quoting one number for a whole paper is exactly the habit this criterion is meant to break.
+
+The archive measurement of Sect.~\ref{sec:archive} adds two limitations that the literature-based domains do not have. The first is common-mode cancellation. CCI and CS2SMOS both ingest CryoSat-2, and a mask-induced difference is precisely the part of their error that they share, so subtracting them removes part of what an independent reference would see. The 0.389 m difference is therefore an optimistic $\sigma_d$, the airborne 0.65 m is the independent end, and the archive verdict is reported at both ends rather than at the lower one. The measured $n_{\mathrm{eff}}$ of 331.8 is one input checked against an independent construction, not a validation of the criterion; the 2\,\% agreement with 325.2 supports only the claim that the design count is not arbitrary.
+
+The second is seasonal. The effective sample size is 150 in November against 311--394 in April, because the early-winter thickness field is spatially more continuous, so the archive has a seasonal lower bound on independent information and a claim that must hold in early winter needs a longer record than the annual figure suggests. Neither limitation changes the five-domain ranking, which uses the campaign design and the airborne $\sigma_d$; both bear on any reading of the archive rows of Table~\ref{tab:master} as evidence that a 2.7 cm bias has become verifiable.
+
+\section{Conclusions}
+
+A claim can be false, true, or untestable, and the third category is invisible in most model-assessment reporting. This paper makes it visible with a single dimensionless number. $\Phi = 2.802\,\sigma_d/(\mathrm{claim}\sqrt{n_{\mathrm{eff}}})$ compares the minimum difference that an archive can resolve at 80\,\% power with the difference that a claim asserts, and returns a value above unity when the claim lies below the floor. It is offered as a method for assessment: it changes no retrieval, no model and no archive, and it requires only three numbers that an assessment already reports.
+
+Applied to five domains with published truth archives and published accuracy claims, the criterion orders them: sea-surface salinity 0.019, precipitation 0.043, soil moisture 0.24, sea-ice thickness 1.3--3.7 and regional forest biomass 2.71. Three domains can test the claims they make; two cannot. The ordering is driven by the geometry of the truth system rather than by its cost or by the geophysical variable, and it is the comparison across domains, not any single value, that carries the scientific content.
+
+Sea-ice thickness is the case in which the floor itself is not a single number. Two defensible correlation kernels applied to the same archive give 3.447 cm and 10.38 cm, a factor of 2.5 between their optima and 3.0 at fixed design; the interval is reported, the ambiguity is treated as a Methods-level commitment, and the verdict is shown to be kernel-independent because every member of the family exceeds the 2.7 cm claim.
+
+A $\pm 50\,\%$ perturbation of $\sigma_d$ and of the claim leaves the three verifiable domains verifiable and leaves sea ice unverifiable at its conservative bound, while regional biomass and the empirical-kernel sea-ice bound cross unity at the optimistic corner. Those crossings are reported as falsification conditions rather than smoothed away.
+
+The criterion is necessary but not sufficient. It says that a claim can be decided, not that it is right: the SMAP accuracy claim has $\Phi = 0.24$ and was met at 18 of 34 core sites, and IMERG's Chinese bias exceeds its floor by a wide margin. Used with that boundary in mind, $\Phi$ turns a familiar caveat -- ``more validation is needed'' -- into an arithmetic statement about how much more, of what kind, and whether the present claim could ever have been checked.
+
+\appendix
+\section{Derivation and the non-central $t$ correction}
+\label{app:derivation}
+
+Equation~(\ref{eq:mde}) follows from the requirement that a test of size $\alpha$ reject the null when the true difference equals the claim with probability $1-\beta$. Under the normal approximation the rejection region is $|\hat{d}| > z_{1-\alpha/2}\,\sigma_d/\sqrt{n_{\mathrm{eff}}}$ and the power at true difference $\delta$ is
+\begin{equation}
+1-\beta = \Phi_{\mathrm{N}}\!\left(\frac{\delta\sqrt{n_{\mathrm{eff}}}}{\sigma_d}-z_{1-\alpha/2}\right)
++ \Phi_{\mathrm{N}}\!\left(-\frac{\delta\sqrt{n_{\mathrm{eff}}}}{\sigma_d}-z_{1-\alpha/2}\right),
+\end{equation}
+where $\Phi_{\mathrm{N}}$ is the standard normal distribution function. Setting the power to 0.80 and solving for $\delta$ gives Eq.~(\ref{eq:mde}) with the two quantiles added. Because the second term is negligible for the values of interest, the relation $\delta\sqrt{n_{\mathrm{eff}}}/\sigma_d = z_{1-\alpha/2}+z_{1-\beta}$ holds to better than 0.1\,\% for $n_{\mathrm{eff}} > 20$.
+
+For small effective sample sizes the test statistic is non-central $t$ rather than normal, and the required constant rises. At $n_{\mathrm{eff}} = 5$ the 80\,\% constant is 3.19 rather than 2.802, at $n_{\mathrm{eff}} = 10$ it is 3.05, and at $n_{\mathrm{eff}} = 20$ it is 2.93. The only domain affected is regional biomass, where $n_{\mathrm{eff}} = 2.4$ and the exact constant is 5.6; using it would raise the biomass $\Phi$ from 2.71 to about 5.4. The correction therefore strengthens the verdict in the one case where it applies and leaves the others unchanged.
+
+The choice of 80\,\% power is a convention shared with the clinical and behavioural literature \citep{cohen1992power,lenth2001some}. At 90\,\% power the constant becomes $1.960+1.282 = 3.242$, raising all floors by 16\,\%; at 70\,\% it becomes 2.484, lowering them by 11\,\%. None of the five verdicts changes under either alternative, which is the sense in which the conclusions are robust to the power convention.
+
+\section{Closure rules}
+\label{app:closure}
+
+Three closures were used. For clustered truth, Eq.~(\ref{eq:kish}) with a single level of clustering is $n_{\mathrm{eff}} = n/[1+(m-1)\rho]$, where $m$ is the cluster size and $\rho$ the intra-cluster correlation. For soil moisture, $n = 2842$, $m = 2842/71 \approx 40$ and $\rho = 0.5$, giving 138.6. For biomass, $n = 39$, $m = 39$ and $\rho = 0.4$, giving 2.41.
+
+For truth distributed over an area with correlation length $L$ and over a time window $T$ with correlation time $\tau$, the number of decorrelation cells is $n_{\mathrm{eff}} = (A/2\pi L^{2})(T/\tau)$. For salinity, $A = 3.6\times10^{8}$ km$^2$, $L = 333$ km, $T = 120$ months and $\tau = 3$ months, giving 20\,668; the factor $2\pi$ rather than $4$ reflects the Gaussian rather than boxcar form of the decorrelation cell. For precipitation, $A = 9.6\times10^{6}$ km$^2$, $L = 100$ km, $T = 1095$ days and $\tau = 3$ days, giving 55\,768.
+
+For truth that arrives as transects, the capacity is set by the number of independent segments per sortie, $n_{\mathrm{seg}} = \max(1, \ell/2L)$ with $\ell$ the typical sortie length, summed over sorties. With $\ell \approx 450$ km and $L = 326$ km, each sortie contributes one segment; 297 flight days plus 28.2 from IceBird give 325.2. The factor of two in the denominator is the same one that appears in the area closure and reflects the two-sided nature of a correlation length.
+
+\section*{Code and data availability}
+
+The example implementation, the input table and the derived tables are archived with the paper and are mirrored in a public code repository that accompanies this submission, \url{https://github.com/dddsx3/free-demo}. The archive is to be deposited in a persistent public repository (Zenodo or an institutional equivalent); a DOI is deliberately not asserted in this draft, because none has been minted, and the placeholder \texttt{[DOI: ZENODO-TO-BE-\allowbreak ASSIGNED]} must be replaced before submission. No other code or data are required to reproduce the results. The implementation was run with Python 3.14.2, NumPy 2.4.1, SciPy 1.17.0 and pandas 3.0.0; Matplotlib 3.10.8 is used for the figures. From the repository root, \texttt{python code/\allowbreak run\_all.py} executes the full chain (arithmetic, number check, figures, PDF) and \texttt{python code/\allowbreak run\_all.py --refs} adds the DOI re-resolution. A second, optional stage reproduces the worked example of Sect.~\ref{sec:implementation}: \texttt{python code/\allowbreak run\_all.py --archive --p1 <dir>}, or \texttt{python code/\allowbreak archive\_example.py --p1 <dir>} on its own, reads the two monthly product fields from a directory outside this archive and writes \texttt{data/archive/} (per-month $\sigma_d$, the autocorrelation, $n_{\mathrm{eff}}$ and the $\Phi$ rows). It is optional because those input fields are derived from the ESA CCI and CS2SMOS distributions and are not redistributed here. Nine regression tests in \texttt{code/\allowbreak test\_phi\_core.py}, run with \texttt{python -m pytest code}, check that the five $\Phi$ values, the three closure identities and the integral-scale rule still reproduce this manuscript. The chain writes seven derived tables to \texttt{data/} --- \path{phi_master.csv} (Table~\ref{tab:master}), \path{phi_sensitivity.csv} (Table~\ref{tab:sensitivity}), \path{phi_kernel_bounds.csv} and \path{phi_variants.csv} (Table~\ref{tab:kernel}), \path{phi_sensitivity_kernel.csv} (the alternative-kernel rows of Table~\ref{tab:sensitivity}), \path{phi_robustness.csv} (the four diagnostics of Sect.~\ref{sec:results}) and \path{power_curve.csv} (Fig.~\ref{fig:power}) --- together with the three committed archive tables that Figs.~\ref{fig:design} and \ref{fig:acf} read (\path{phi_archive_design.csv}, \path{archive_neff_months.csv} and \path{archive_acf_curve.csv}) --- and seven figures to \texttt{figures/} (Figs.~\ref{fig:power}, \ref{fig:ranking}, \ref{fig:floor}, \ref{fig:sensitivity}, \ref{fig:kernel}, \ref{fig:design} and \ref{fig:acf}). The script exits non-zero if a headline number moves by more than 0.1\,\% from the value printed here. No observational granule is downloaded by the code; the truth archives used are cited in Table~\ref{tab:provenance} and carry their own persistent identifiers.
+
+\section*{CRediT authorship contribution statement}
+
+[AUTHOR CONTRIBUTION STATEMENT]
+
+\section*{Declaration of competing interest}
+
+[COMPETING INTERESTS STATEMENT]
+
+\section*{Acknowledgements}
+
+[AUTHOR ACKNOWLEDGEMENTS]
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{refs}
+
+\end{document}

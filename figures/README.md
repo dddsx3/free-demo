@@ -1,0 +1,27 @@
+# figures/
+
+Written by `python code/make_figures.py`, which `run_all.py` calls. Each figure
+exists twice: a vector PDF that the manuscript includes, and a PNG preview for
+quick inspection. File names do not match figure numbers, because the figures
+were introduced in a different order from the one they appear in; the mapping
+is:
+
+| file | figure in the manuscript | content |
+|---|---|---|
+| `fig1_power.pdf` | Figure 1 | power to detect a true difference as a function of the multiple of the floor, plus the non-central `t` correction |
+| `fig5_kernel.pdf` | Figure 2 | two correlation models of the same difference field, and the two floors they imply for sea ice |
+| `fig2_ranking.pdf` | Figure 3 | the five `Phi` values on a logarithmic axis, sea ice drawn as an interval |
+| `fig3_floor.pdf` | Figure 4 | verification floor against claimed magnitude, with the `Phi = 0.1, 1, 10` diagonals |
+| `fig4_sensitivity.pdf` | Figure 5 | the five `+/- 50 %` sensitivity panels |
+| `fig6_design.pdf` | Figure 6 | `Phi` against `n_eff` for the two ends of the measured `sigma_d`, with the campaign, fourteen-winter and 43-month designs marked |
+| `fig7_acf.pdf` | Figure 7 | autocorrelation of the 2019-04 CCI--CS2SMOS difference field along `x` and `y`, with the two bandwidth factors |
+
+## Determinism
+
+The plotted quantities are deterministic: they are read from `data/*.csv`.
+The PDF bytes are not. matplotlib writes a creation timestamp into every PDF, so
+`figures/*.pdf` hashes change between runs even when the plotted data are
+identical; the PNG previews have a timestamp-free pixel payload and are stable
+for a fixed matplotlib version. Reproducibility here means "the same numbers
+are plotted", not "the same bytes are written". The PDFs are included for
+convenience and can be regenerated at any time.

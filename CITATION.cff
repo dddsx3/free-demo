@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this code, cite the manuscript and the archive DOI."
+title: "Phi criterion: reference implementation"
+abstract: >-
+  Reference implementation, derived tables and figures for a dimensionless
+  testability criterion for geophysical claims, Phi = MDE80 / claim. The
+  criterion compares the 80 % verification floor of an observational archive
+  with the accuracy the assessment asserts, using the standard deviation of the
+  product-truth difference, the effective number of independent truth samples
+  and the claim magnitude.
+authors:
+  - family-names: "[SURNAME 1]"
+    given-names: "[GIVEN 1]"
+  - family-names: "[SURNAME 2]"
+    given-names: "[GIVEN 2]"
+license: MIT
+repository-code: "https://github.com/dddsx3/free-demo"
+version: "1.0.0"
+date-released: "2026-11-09"
+keywords:
+  - geoscience
+  - model-evaluation
+  - uncertainty
+  - reproducibility
+  - sea-ice
+  - statistics

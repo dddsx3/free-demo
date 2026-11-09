@@ -1,0 +1,199 @@
+P4 / Phi criterion -- reproducibility record
+=============================================
+Manuscript : "A dimensionless verification floor for model assessment: which accuracy
+             claims can an observational archive actually resolve?"
+Target     : Computers & Geosciences (Elsevier), class `elsarticle.cls`
+             [preprint,12pt,authoryear]; author-year citations, bibliography
+             style `elsarticle-harv.bst`; manuscript type: research paper
+Verified on: 2026-11-08, Windows 11, Asia/Shanghai
+Rebuilt for publication: 2026-11-09 (repository URL inserted; 40 pages,
+                         0 overfull, 1 underfull, numbers unchanged)
+
+-----------------------------------------------------------------------------
+1. ENVIRONMENT
+-----------------------------------------------------------------------------
+OS            Windows (PowerShell 7)
+Python        3.14.2
+numpy         2.4.1
+pandas        3.0.0
+matplotlib    3.10.8
+scipy         1.17.0
+pymupdf       installed (used only for the word count / page audit, not for the paper)
+TeX           MiKTeX-pdfTeX 4.18 (MiKTeX 24.1), bibtex from the same distribution
+Template      Elsevier elsarticle package (elsarticle.cls and
+              elsarticle-harv.bst) from the MiKTeX distribution; no local
+              modification of the class or the bibliography style
+Network       required only for `verify_refs.py` (Crossref / DataCite). Every other
+              stage is offline and deterministic.
+
+No observational granule is downloaded by any script. The inputs are the values
+tabulated in Table 1, each with a citable source.
+
+-----------------------------------------------------------------------------
+2. COMMANDS
+-----------------------------------------------------------------------------
+From the paper root:
+
+    git clone https://github.com/dddsx3/free-demo
+    python code/run_all.py              # arithmetic + number check + figures + PDF
+    python code/run_all.py --refs       # the above plus a full DOI re-resolution
+    python code/run_all.py --no-tex     # numbers and figures only
+    python code/run_all.py --refs-only  # reference audit only
+
+Individual stages, if preferred:
+
+    python code/phi_core.py
+    python code/make_figures.py
+    python code/verify_refs.py
+    pdflatex -interaction=nonstopmode manuscript.tex
+    bibtex manuscript
+    pdflatex -interaction=nonstopmode manuscript.tex
+    pdflatex -interaction=nonstopmode manuscript.tex
+
+`run_all.py` exits non-zero if any stage fails, if the reference list is
+unresolved in the PDF, or if a headline number moves by more than 0.1 % from the
+value printed in the manuscript.
+
+-----------------------------------------------------------------------------
+3. EXPECTED CONSOLE OUTPUT (arithmetic stage)
+-----------------------------------------------------------------------------
+     id        n_eff  sigma_d  claim     mde80      phi
+    SIT   325.200000     0.65  0.027  0.100996 3.740610  not verifiable
+     SM   138.634146     0.04  0.040  0.009519 0.237976  verifiable
+    SSS 20667.795548     0.20  0.200  0.003898 0.019490  verifiable
+     PR 55767.892059     3.00  0.820  0.035596 0.043409  verifiable
+    AGB     2.407407    45.00 30.000 81.265432 2.708848  not verifiable
+
+  kernel x design family (where the sea-ice interval comes from):
+    ACF, archive 8/campaign        3.447 cm   phi 1.2767
+    ACF, optimised allocation      3.406 cm   phi 1.2615
+    exponential, optimised         8.400 cm   phi 3.1111
+    exponential, archive Kish     10.098 cm   phi 3.7400
+    exponential, archive 27/camp  10.380 cm   phi 3.8444
+
+    Phi reported: SIT=3.741  SM=0.238  SSS=0.019  PR=0.043  AGB=2.709
+    sea-ice interval: 1.277 - 3.740
+    kernel ratio (fixed design) 3.011 ; at respective optima 2.466
+
+  sensitivity (0.5x .. 1.5x on sigma_d and on claim, 25 cells per domain):
+    SSS  0.0065 - 0.058    robustly verifiable
+    PR   0.0145 - 0.130    robustly verifiable
+    SM   0.0793 - 0.714    robustly verifiable
+    SIT  1.2469 - 11.222   robustly not verifiable (exponential kernel)
+    AGB  0.9029 -  8.127  verdict flips at the optimistic corner
+
+  archive rows (data/phi_archive_design.csv, checked by run_all):
+    2019-04        n_eff 331.8   sigma_d 0.3892   phi 2.217
+    14 winters     n_eff 4498.2  sigma_d 0.3892   phi 0.602
+    14 winters     n_eff 4498.2  sigma_d 0.6500   phi 1.006
+    43 months      n_eff 13815.9 sigma_d 0.3892   phi 0.344
+    43 months      n_eff 13815.9 sigma_d 0.6500   phi 0.574
+
+The same numbers appear in Table 3 (master, including the two archive rows),
+Table 4 (sensitivity), Fig. 3 (ranking with the sea-ice error bar), Fig. 5
+(the five sensitivity panels), Fig. 6 (Phi against design) and Fig. 7 (the
+2019-04 difference-field autocorrelation).
+
+-----------------------------------------------------------------------------
+4. PDF AUDIT
+-----------------------------------------------------------------------------
+    Output written on manuscript.pdf (40 pages, ...)
+    Overfull \hbox occurrences .......... 0
+    Underfull \hbox occurrences ......... 1 (badness 1248, Introduction)
+    Undefined references ................ 0
+    Undefined citations ................. 0
+    Text before the reference list ...... approx. 10 800 words
+      (title block, abstract, main text, appendix, figure captions and
+       table bodies; the reference list is excluded. The class option
+       `preprint` sets the text in a wide single column, so neither the
+       page count nor the word count is comparable with the earlier
+       Copernicus layout, which gave 27 pages and approx. 8600 words
+       under a narrower counting rule.)
+    Abstract (same tokenisation) ........ 286 words ('Sect.' counting as one)
+    Figures ............................. 7
+    Tables .............................. 4
+    Bibliography entries ............... 60, all cited and typeset
+
+Reference audit (data/ref_check.csv): 59 entries resolved and accepted
+(either by exact DOI on Crossref/DataCite, or by title search with a title
+similarity >= 0.84 and a year within +-3); 0 rejected entries remain in the
+paper. The 60th entry is Kish (1965), *Survey Sampling*, a book with no DOI,
+typeset by hand. Preprint/discussion DOIs (tc-YYYY-N, tcd-*, essd-YYYY-N,
+hess-YYYY-N, cpd-*, cptc-*) were rejected by construction so that the final
+reference list cannot point at a manuscript version.
+
+CORRECTION RECORD (2026-11-08): an earlier version of this record stated a
+bibliography count that did not match the typeset list. The discrepancy was the
+number of keys held in refs.bib, not the number of entries typeset: the compiled
+PDF has always carried 60 \bibitem entries and 60 distinct \bibcite keys. The
+eight keys that were never cited (sterne2001sifting, perneger1998whats,
+box1976science, notz2016observed, gruber2019evolution, hersbach2020era5,
+munoz2021era5land, rodell2004gldas) were verified to have zero citations in
+manuscript.tex --- including captions, table notes, the appendix and
+\citep/\citet/\citealp --- and were then deleted from refs.bib, which now holds
+60 entries, matching the 60 typeset. No \nocite was used.
+
+A second pass on the same date found three overfull boxes (4.7 pt, 8.0 pt and
+16.0 pt) that an earlier audit had missed, all in the Code availability
+paragraph, where long monospaced file names could not be broken. Two long
+identifiers were left as \texttt but given explicit break points, the seven
+table names now use \path, and the preamble sets \emergencystretch to 1 em. The
+current build reports 0 overfull boxes.
+
+-----------------------------------------------------------------------------
+5. ARTEFACT FINGERPRINTS (sha256, first 32 hex characters)
+-----------------------------------------------------------------------------
+    1bf23d8677abde3fd69fca3b93c910ef  data/phi_master.csv
+    937b9f65f174456ddb5265ee8f1fb09b  data/phi_kernel_bounds.csv
+    dc0728b1a2fed3b3b1cd3cf466c7bfcd  data/phi_sensitivity.csv
+    4c1c004bb2a7c3634ce5e0164460239b  data/phi_robustness.csv
+    f1e835249b696ee0d263e0b73cf1d29e  data/phi_archive_design.csv
+    cd34bf7b79b4043f90be463a73d0b561  data/archive_neff_months.csv
+    f8a4ac7229f3ccce259238ed16fd7049  data/archive_acf_curve.csv
+    83e5562699051c71a5f94f99c237b716  manuscript.tex
+    47f755660bc57203b211deac6144e217  refs.bib
+    afc1ef6a966dc4ecbe2ec2a2526da999  manuscript.pdf
+
+Caveat on figure hashes: matplotlib writes a creation timestamp into every PDF,
+so `figures/*.pdf` hashes change between runs even when the plotted data are
+identical. The CSV hashes above are the deterministic ones; the PNG previews
+carry a timestamp-free pixel payload and are stable for a fixed matplotlib
+version. Reproducibility therefore means "the CSV values and the plotted
+quantities are identical", not "the PDF bytes are identical".
+
+-----------------------------------------------------------------------------
+6. KNOWN NON-DETERMINISM AND FAILURE MODES
+-----------------------------------------------------------------------------
+- `verify_refs.py` needs network access. It fails loudly, with a per-entry
+  reason in data/ref_rejected.csv, when a DOI is unreachable or a title search
+  returns nothing above threshold. It is excluded from the default `run_all.py`
+  chain for that reason and enabled with `--refs`.
+- Crossref occasionally rate-limits; the script retries with a delay and
+  records the failure rather than silently dropping a reference.
+- The three dataset entries that carry a title and a DOI but no personal
+  author now carry the data centre as a corporate author ({PANGAEA},
+  {ORNL DAAC}, {GPCC}), so that author-year sorting and the in-text label
+  ("PANGAEA, 2021") are well defined. `bibtex` runs without warnings.
+- The literature values that enter Table 1 are fixed constants in
+  `code/phi_core.py`. Changing a source value changes every downstream table,
+  Fig. 3 and Fig. 5 in one run; there is no second place where a number is
+  typed by hand.
+- The PDF is produced by `run_all.py` only if `pdflatex` is on PATH; otherwise
+  the stage is skipped with a message and the rest of the chain still completes.
+
+-----------------------------------------------------------------------------
+7. WHAT THIS RECORD DOES NOT COVER
+-----------------------------------------------------------------------------
+- Author names, affiliations, ORCID iDs, funding, acknowledgements, author
+  contributions and competing-interest statements are `[AUTHOR ...]`
+  placeholders and must be filled before submission. The same applies to the
+  creator entries in `CITATION.cff` and `.zenodo.json` and to the copyright
+  holder in `LICENSE`.
+- The public code repository exists and is resolved in the Code and data
+  availability statement: https://github.com/dddsx3/free-demo. One placeholder
+  remains there, `[DOI: ZENODO-TO-BE-ASSIGNED]`, which can only be minted from
+  a Zenodo-linked release and therefore needs the corresponding account.
+  `REPO_SETUP.md` gives the release procedure.
+- The suggested-reviewer list in `cover_letter.md` is a template.
+
+End of record.

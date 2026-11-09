@@ -1,0 +1,9 @@
+# Reference versions (REPRO_CHECK.txt, section 1): Python 3.14.2,
+# numpy 2.4.1, pandas 3.0.0, matplotlib 3.10.8, scipy 1.17.0.
+# Lower bounds are used so that the install also resolves on older
+# interpreters; the code uses no API newer than these bounds.
+numpy>=2.0
+pandas>=2.2
+matplotlib>=3.8
+scipy>=1.11
+pytest>=8.0

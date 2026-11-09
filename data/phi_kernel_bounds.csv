@@ -1,0 +1,6 @@
+kernel,design,floor_cm,source,claim_cm,phi
+empirical difference-field ACF,"archive, 8 per campaign",3.447,"n9 campaign design, sect. 5",2.7,1.2766666666666666
+empirical difference-field ACF,optimised allocation,3.406,"n9 campaign design, sect. 0",2.7,1.2614814814814814
+"exponential, L=326 km",optimised allocation,8.4,"n9 campaign design, sect. 0",2.7,3.111111111111111
+"exponential, L=326 km","archive, Kish equal weight",10.098,n8 capacity table (n_eff=325.2),2.7,3.74
+"exponential, L=326 km","archive, 27 per campaign",10.38,"n9 campaign design, sect. 5",2.7,3.8444444444444446

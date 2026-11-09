@@ -1,0 +1,113 @@
+{
+ "months_with_common_cells": 43,
+ "sigma_d_month_median": 0.38922029733657837,
+ "sigma_d_pooled_rms": 0.4078628008210498,
+ "sigma_d_month_min": 0.2844109535217285,
+ "sigma_d_month_max": 0.5522103905677795,
+ "n_common_median": 18189.0,
+ "n_eff_one_month": 331.798390023542,
+ "n_eff_14winters": 4498.205430010742,
+ "n_eff_43months": 13815.916677890136,
+ "acf": [
+  {
+   "month": "2018-04",
+   "n": 18173,
+   "kappa_x": 7.4003093764185905,
+   "kappa_y": 6.226432669907808,
+   "lag0_x": 31,
+   "lag0_y": 29,
+   "bandwidth_x_km": 185.00773441046476,
+   "bandwidth_y_km": 155.6608167476952,
+   "n_eff": 394.40049763263977,
+   "sigma_d": 0.4826095402240753
+  },
+  {
+   "month": "2019-04",
+   "n": 18033,
+   "kappa_x": 7.686325695365667,
+   "kappa_y": 7.070903744548559,
+   "lag0_x": 31,
+   "lag0_y": 31,
+   "bandwidth_x_km": 192.15814238414168,
+   "bandwidth_y_km": 176.77259361371398,
+   "n_eff": 331.798390023542,
+   "sigma_d": 0.49994656443595886
+  },
+  {
+   "month": "2020-11",
+   "n": 13307,
+   "kappa_x": 9.612199515104294,
+   "kappa_y": 9.253284834325314,
+   "lag0_x": 31,
+   "lag0_y": 31,
+   "bandwidth_x_km": 240.30498787760735,
+   "bandwidth_y_km": 231.33212085813284,
+   "n_eff": 149.6102847188786,
+   "sigma_d": 0.32565444707870483
+  },
+  {
+   "month": "2021-04",
+   "n": 18189,
+   "kappa_x": 8.085385158658028,
+   "kappa_y": 7.238086455501616,
+   "lag0_x": 31,
+   "lag0_y": 31,
+   "bandwidth_x_km": 202.1346289664507,
+   "bandwidth_y_km": 180.9521613875404,
+   "n_eff": 310.8023856922783,
+   "sigma_d": 0.46286964416503906
+  }
+ ],
+ "phi_table": [
+  {
+   "design": "campaign, Kish design (325.2)",
+   "n_eff": 325.2,
+   "sigma_d": 0.38922029733657837,
+   "claim": 0.027,
+   "mde80": 0.060476735836657525,
+   "phi": 2.2398791050613895
+  },
+  {
+   "design": "one month, cell-level ACF",
+   "n_eff": 331.798390023542,
+   "sigma_d": 0.38922029733657837,
+   "claim": 0.027,
+   "mde80": 0.05987237333049218,
+   "phi": 2.2174953085367477
+  },
+  {
+   "design": "14 winters, one month each (conservative)",
+   "n_eff": 4498.205430010742,
+   "sigma_d": 0.38922029733657837,
+   "claim": 0.027,
+   "mde80": 0.01626087713249731,
+   "phi": 0.6022547086110115
+  },
+  {
+   "design": "43 months concatenated (optimistic bound)",
+   "n_eff": 13815.916677890136,
+   "sigma_d": 0.38922029733657837,
+   "claim": 0.027,
+   "mde80": 0.009278414248604544,
+   "phi": 0.34364497217053863
+  },
+  {
+   "design": "14 winters, independent sigma_d = 0.65",
+   "n_eff": 4498.205430010742,
+   "sigma_d": 0.65,
+   "claim": 0.027,
+   "mde80": 0.027155752689287972,
+   "phi": 1.0057686181217766
+  },
+  {
+   "design": "43 months, independent sigma_d = 0.65",
+   "n_eff": 13815.916677890136,
+   "sigma_d": 0.65,
+   "claim": 0.027,
+   "mde80": 0.015495001938138056,
+   "phi": 0.5738889606717799
+  }
+ ],
+ "n_eff_needed_for_phi_below_one": 1631.5473934005072,
+ "note": "sigma_d is the cell-level standard deviation of A - B; n_eff follows from the empirical autocorrelation of the same difference field. The two thickness products share a radar, so sigma_d here is an optimistic end, not an independent reference."
+}
