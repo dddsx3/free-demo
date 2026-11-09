@@ -180,6 +180,13 @@ quantities are identical", not "the PDF bytes are identical".
   typed by hand.
 - The PDF is produced by `run_all.py` only if `pdflatex` is on PATH; otherwise
   the stage is skipped with a message and the rest of the chain still completes.
+- Byte-identity of the committed CSVs and figures holds for the pinned
+  reference versions in section 1. An anonymous clean clone on 2026-11-09
+  resolved numpy 2.5.4, pandas 3.1.1, matplotlib 3.11.2 and scipy 1.18.1:
+  still 9 passed, all headline numbers unchanged, but `data/power_curve.csv`
+  and the seven figures then differ in bytes (the power-curve values agree to
+  2.4 x 10^-16; the figures differ by matplotlib version). The numbers, not
+  the bytes, are what the manuscript claims.
 
 -----------------------------------------------------------------------------
 7. WHAT THIS RECORD DOES NOT COVER

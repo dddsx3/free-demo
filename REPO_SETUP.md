@@ -102,6 +102,16 @@ Acceptance is all four of:
 If `run_all.py` reports a headline number moved by more than 0.1 %, the
 committed CSVs and the code disagree — do not push that state; fix it first.
 
+Version drift, measured in an anonymous clone on 2026-11-09 with the
+resolved newer stack (numpy 2.5.4, pandas 3.1.1, matplotlib 3.11.2,
+scipy 1.18.1): the nine tests still pass and every headline number is
+unchanged, but `git status` then reports `data/power_curve.csv` and the seven
+figures as modified. Compared numerically the power-curve values agree to
+2.4 × 10^-16; the CSV bytes differ only in float text, and the figures differ
+because of the matplotlib version. Byte-identity is therefore a property of
+the pinned reference versions, not of any interpreter that satisfies the
+lower bounds.
+
 ## 5. Close the loop in the manuscript
 
 The repository URL appears in five places. All five carry
