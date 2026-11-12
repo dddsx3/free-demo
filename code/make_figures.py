@@ -220,8 +220,12 @@ fig, (axa, axb) = plt.subplots(1, 2, figsize=(7.1, 2.9),
 d = np.linspace(0, 400, 400)
 axa.plot(d, np.exp(-d / 326.0), color=C_VER, lw=1.6,
          label="exponential kernel, $L$ = 326 km")
-anch = np.array([0, 25, 75, 150])
-rho = np.array([1.0, 0.269, 0.080, 0.0])
+# Empirical difference-field ACF taken from the released curve
+# archive_acf_curve.csv (rho_x at 25/50/75/150 km = 0.454/0.266/0.212/0.136);
+# the earlier 0.269/0.080 values were not in that file and do not integrate to
+# the kappa used for n_eff.
+anch = np.array([0, 25, 50, 75, 150])
+rho = np.array([1.0, 0.454, 0.266, 0.212, 0.136])
 axa.plot(anch, rho, "o-", color=C_UNVER, lw=1.6, ms=4.5, mfc="white", mew=1.0,
          label="empirical difference-field ACF")
 axa.axhline(0, color="0.3", lw=0.7)
@@ -267,7 +271,7 @@ for sg, colour, lab in [(0.65, C_VER, r"independence: $\sigma_d$ = 0.65 m"),
             zorder=3)
 ax.axhline(1.0, color="0.1", lw=1.1, ls="--")
 ax.annotate(r"$\Phi = 1$", (260, 1.04), fontsize=7, color="0.1")
-for x, txt, ytxt in [(325.2, "campaign", 3.9), (4498.2, "14 winters", 0.30),
+for x, txt, ytxt in [(325.2, "campaign", 3.9), (3534.3, "11 winters", 0.30),
                      (13815.9, "43 months", 0.16)]:
     ax.annotate(txt, (x, ytxt), fontsize=6.8, ha="center", color="0.3")
 ax.set_xscale("log")

@@ -85,11 +85,31 @@ def test_phi_decreases_with_effective_sample_size():
     assert phi[0] > phi[1] > phi[2]
 
 
-def test_archive_example_rejects_missing_inputs(tmp_path, monkeypatch):
-    """Without --p1 and without P1_OUT the worked example must fail loudly."""
+def test_archive_example_rejects_missing_real_inputs(tmp_path, monkeypatch):
+    """With a --p1 directory that lacks the npz files it must fail loudly."""
     monkeypatch.delenv("P1_OUT", raising=False)
-    monkeypatch.setattr(sys, "argv", ["archive_example.py", "--out", str(tmp_path)])
+    missing = tmp_path / "empty"
+    missing.mkdir()
+    monkeypatch.setattr(sys, "argv",
+                        ["archive_example.py", "--p1", str(missing),
+                         "--out", str(tmp_path / "out")])
     assert ax.main() == 2
+
+
+def test_archive_example_runs_from_committed_csv(tmp_path, monkeypatch):
+    """With no --p1 the worked example recomputes from the shipped CSVs."""
+    monkeypatch.delenv("P1_OUT", raising=False)
+    monkeypatch.setattr(sys, "argv",
+                        ["archive_example.py", "--out", str(tmp_path / "out")])
+    assert ax.main() == 0
+    import json
+    res = json.load(open(tmp_path / "out" / "archive_example.json"))
+    # eleven winters -> n_eff ~ 3 534, shared Phi ~ 0.68
+    assert abs(res["n_eff_11winters"] - 3534.3) < 1.0
+    shared = [t for t in res["phi_table"]
+              if t["design"].startswith("11 winters, one month")
+              and t["sigma_d"] < 0.5][0]
+    assert abs(shared["phi"] - 0.679) < 0.01
 
 
 def test_archive_example_runs_on_a_synthetic_pair(tmp_path, monkeypatch):

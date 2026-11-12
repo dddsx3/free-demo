@@ -1,0 +1,20 @@
+quantity,value,provenance
+n_eff per winter month (median of acf.csv),321.30038785791015,median of 4 monthly n_eff in data/archive/acf.csv
+distinct winters in sigma_by_month.csv,11,"distinct years: 2011,2012,2014,2015,2017,2018,2019,2020,2021,2023,2024"
+overlapping months,43,rows of data/archive/sigma_by_month.csv
+"n_eff, 11-winter archive",3534.304266437012,n_eff_per_month * 11
+"n_eff, 43-month pooled",13815.916677890136,n_eff_per_month * 43
+sigma_d median (m),0.3892202973365783,median std over 43 months
+sigma_d RMS (m),0.40786280082104975,sqrt(mean std^2) over 43 months
+sigma_d range (m),0.284-0.552,min/max std over 43 months
+"Phi, 11-winter shared sigma_d=0.389",0.6794349441476336,Z*0.389/(0.027*sqrt(3534.3))
+"Phi, 11-winter independent sigma_d=0.65",1.1346600285700412,Z*0.65/(0.027*sqrt(3534.3))
+n_eff needed for Phi<1 at sigma_d=0.389,1631.5473934005065,(Z*0.389/0.027)^2
+n_eff needed for Phi<1 at sigma_d=0.65,4550.251975308643,(Z*0.65/0.027)^2
+kappa_x from released curve,7.6863256953656665,integral scale of archive_acf_curve.csv rho_x
+kappa_y from released curve,7.070903744548559,integral scale of archive_acf_curve.csv rho_y
+n_eff 2019-04 from kappa,331.7983900235421,18033/(kappa_x*kappa_y)
+"sea-ice floor, empirical ACF (cm)",3.446861082958653,"campaign design input: n_eff 2792, not derived from the archive kappa"
+"sea-ice floor, exponential Kish (cm)",10.099647567925821,Z*0.65/sqrt(325.2)
+"sea-ice Phi, empirical end",1.2766152159106121,floor_empirical/2.7
+"sea-ice Phi, exponential end",3.7406102103428966,floor_kish/2.7

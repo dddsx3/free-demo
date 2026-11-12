@@ -1,123 +1,52 @@
-# phi-criterion
+# Verification floor Phi
 
-Code and derived tables for the manuscript
+A claim about model error can only be tested if the archive used to test it is
+informative enough. This repository implements the dimensionless floor that says
+how informative it has to be,
 
-> A dimensionless verification floor for model assessment: which accuracy claims
-> can an observational archive actually resolve?
+    Phi = 2.802 * sigma_d / (claim * sqrt(n_eff)),
 
-The paper defines one number,
+together with the archive recomputation for Arctic sea-ice thickness thickness
+that supplies its hardest case, and the sensitivity grids reported in the paper.
 
-    Phi = 2.802 * sigma_d / (claim * sqrt(n_eff)) = MDE80 / claim,
+`Phi > 1` means the claim cannot be verified by this archive. `Phi < 1` means it
+can be — not that it is right.
 
-where `sigma_d` is the standard deviation of the product–truth difference,
-`n_eff` the effective number of independent truth samples and `claim` the
-magnitude the assessment asserts. `Phi > 1` means the claim lies below what the
-archive can resolve at 80 % power. This repository reproduces every table,
-figure and headline number in the manuscript from fixed inputs; it downloads
-no observational data.
+## What is here
 
-## Install
+    code/        the whole chain, one entry point
+      phi_core.py           Phi, MDE, effective sample size, sensitivity grids
+      archive_recompute.py  sea-ice archive: kappa, n_eff, the two kernels
+      run_all.py            runs everything, checks every number, writes figures
+      make_figures.py       the seven figures
+      test_phi_core.py      ten regression tests
+    data/        every table the paper quotes, as CSV, with data/README.md
+    figures/     the figures (PDF)
+    manuscript.tex, supplement.tex, refs.bib   the submission-side sources
+    REPRO_CHECK.txt   environment, run order, expected values
 
-    git clone https://github.com/dddsx3/free-demo
-    cd free-demo
-    python -m pip install -r requirements.txt
+## Run it
 
-Python 3.10 or newer. The reference run used Python 3.14.2 with numpy 2.4.1,
-pandas 3.0.0, matplotlib 3.10.8 and scipy 1.17.0; `requirements.txt` states
-lower bounds so that the install also works on older interpreters.
+    pip install numpy scipy pandas matplotlib pytest
+    python code/run_all.py            # arithmetic, number check, figures, both PDFs
+    python -m pytest code             # ten tests
+    python code/run_all.py --refs     # optional: re-resolve every DOI
 
-## Reproduce everything with one command
+`run_all.py` exits non-zero if any headline number moves by more than 0.1 % from
+the value printed in the manuscript, so it doubles as a submission gate.
 
-From the repository root:
+## The archive example
 
-    python code/run_all.py
+The sea-ice section uses two monthly product fields that are not redistributed
+here. Without them, `archive_example.py` falls back to the two CSVs those fields
+produced (`data/archive/sigma_by_month.csv`, `data/archive/acf.csv`) and
+recomputes the same summary:
 
-This runs the arithmetic, checks that no headline number has moved by more than
-0.1 % from the value printed in the manuscript, writes the seven derived tables
-to `data/`, writes the seven figures to `figures/`, and — if `pdflatex` and
-`bibtex` are on `PATH` — builds `manuscript.pdf` (25 pages) and
-`supplement.pdf` (15 pages). The process exits non-zero if any stage fails.
+    python code/archive_recompute.py
 
-Options:
+Every measured number in the paper reproduces that way.
 
-| command | effect |
-|---|---|
-| `python code/run_all.py` | full chain, including the PDF |
-| `python code/run_all.py --no-tex` | numbers and figures only |
-| `python code/run_all.py --refs` | full chain plus a DOI re-resolution audit (needs network) |
-| `python code/run_all.py --refs-only` | reference audit only |
-| `python code/run_all.py --archive --p1 DIR` | also runs the optional worked example on a real archive |
+## Licence and citation
 
-## Tests
-
-    python -m pytest code
-
-Nine tests cover the five reported `Phi` values, the three closure identities
-(`n_eff` = 325.2, 138.6, 20 668), the integral-scale rule, the monotonicity of
-`Phi` in `n_eff`, and the two failure modes of the worked example.
-
-## Optional: worked example on a real archive
-
-`code/archive_example.py` takes the one step that the five tabulated domains
-leave open — it estimates `sigma_d` and the correlation bandwidth from two
-coincident monthly thickness fields instead of assuming them:
-
-    python code/archive_example.py --p1 DIR_WITH_MONTHLY_FIELDS
-
-`DIR_WITH_MONTHLY_FIELDS` must contain `p1_cci_monthly.npz` and
-`p1_monthly_cells.npz`. Those files are derived from the ESA CCI and CS2SMOS
-distributions and are **not** redistributed here, so this stage is optional and
-skipped by default. It writes `data/archive/` (per-month `sigma_d`, the
-autocorrelation, `n_eff` and the `Phi` rows). The file header of the script
-states the expected values for the reference archive.
-
-## Layout
-
-    code/
-      phi_core.py         constants, three closures, Phi table, sensitivity
-      make_figures.py     the seven figures
-      archive_example.py  optional worked example (not a library)
-      run_all.py          one-command chain
-      test_phi_core.py    nine regression tests
-      verify_refs.py      DOI/title audit of refs.bib (network)
-    data/                 derived tables written by the chain, see data/README.md
-    figures/              figure PDFs and PNG previews, see figures/README.md
-    manuscript.tex        manuscript source (elsarticle, author-year)
-    supplement.tex        supplementary material, S1-S7 (same class, not counted)
-    refs.bib              bibliography, 54 entries, all cited
-    REPRO_CHECK.txt       environment, commands, expected output, fingerprints
-    REPO_SETUP.md         how to publish this directory as a public repository
-    legacy_copernicus/    superseded Copernicus class package and template
-
-The manuscript is written to the Computers & Geosciences length rule: body text
-under the publisher's counting rule is 5 361 tokens, 5 405 with the title and
-author block, against a 5 500-word limit, with abstract, keywords, references
-and captions excluded. The supplement is a separate file, is not counted, and
-carries the derivation, the full provenance table, the sensitivity protocol,
-the archive diagnostics and the code inventory that the manuscript cites as
-S1-S7. `REPRO_CHECK.txt`, section 4, records the rule and the margin.
-
-`legacy_copernicus/` records that an earlier revision was prepared for
-Geoscientific Model Development: it holds `copernicus.cls`, `.bst`, `.cfg` and
-the unmodified journal template. Nothing in the build uses it, it is listed in
-`.gitignore`, and it is **not** part of the repository; it exists on disk only
-so that the change of venue stays auditable.
-
-## What is not in this repository
-
-- No observational granule: the five domains use literature values that are
-  fixed constants in `code/phi_core.py`, each with a citable source.
-- No credentials, no tokens, no personal data.
-- `manuscript.pdf` and `supplement.pdf` are build artefacts; `REPRO_CHECK.txt`
-  records their fingerprints, so a rebuilt PDF that differs in bytes is
-  expected.
-
-## License
-
-MIT, see `LICENSE`. Replace the copyright holder placeholder before publishing.
-
-## Citation
-
-The archived release is to be deposited on Zenodo; the DOI placeholder in
-`manuscript.tex` and in `REPRO_CHECK.txt` is filled only after the first public
-push. Until then, cite the manuscript.
+Code MIT (see LICENSE); derived tables CC BY 4.0. If you use this, please cite
+the article and this repository (CITATION.cff).

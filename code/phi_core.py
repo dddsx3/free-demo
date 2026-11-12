@@ -187,6 +187,25 @@ for tag, base in (("SIT_ACF_bound", 3.447 / 2.7), ("SIT_EXP_bound", 10.098 / 2.7
 pd.DataFrame(rows).to_csv(DATA / "phi_sensitivity_kernel.csv", index=False, encoding="utf-8")
 
 # ----------------------------------------------------------------------------
+# n_eff sensitivity: S2.2 names n_eff the largest source of uncertainty, so the
+# grid must perturb it, not only sigma_d and the claim.  Scale each domain's
+# n_eff by 0.5 / 0.75 / 1.0 / 1.25 / 1.5 and recompute Phi (sigma_d, claim held
+# at their base values).  Phi is proportional to n_eff**-0.5, so the factor is
+# 1/sqrt(scale).
+# ----------------------------------------------------------------------------
+NEF_FACTORS = [0.5, 0.75, 1.0, 1.25, 1.5]
+neff_rows = []
+for _, r in master.iterrows():
+    for f in NEF_FACTORS:
+        ne = r.n_eff * f
+        ph = Z_REPORTED * r.sigma_d / (r.claim * np.sqrt(ne))
+        neff_rows.append(dict(id=r.id, domain=r.domain, n_eff_factor=f,
+                              n_eff=ne, phi=ph, log10_phi=np.log10(ph)))
+neff_sens = pd.DataFrame(neff_rows)
+neff_sens.to_csv(DATA / "phi_sensitivity_neff.csv", index=False, encoding="utf-8")
+print("n_eff sensitivity written: factors", NEF_FACTORS)
+
+# ----------------------------------------------------------------------------
 # Power curve: P(detect) as a function of true effect measured in units of claim.
 # Under the normal approximation the non-centrality is delta/(sigma_d/sqrt(n_eff))
 # = 2.802 * k / Phi, with k = delta/claim.

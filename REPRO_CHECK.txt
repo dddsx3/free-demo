@@ -87,10 +87,22 @@ printed in the manuscript.
     SIT  1.2469 - 11.222   robustly not verifiable (exponential kernel)
     AGB  0.9029 -  8.127  verdict flips at the optimistic corner
 
+  n_eff sensitivity (NEW for this revision; data/phi_sensitivity_neff.csv):
+    S2.2 names n_eff the largest source of uncertainty, so each domain's n_eff is
+    now also scaled by 0.5/0.75/1.0/1.25/1.5 (sigma_d and claim held at base).
+    Because Phi ~ n_eff^-0.5 the factor is 1/sqrt(scale):
+    SSS  0.0097 - 0.0385    robustly verifiable
+    PR   0.0217 - 0.0868    robustly verifiable
+    SM   0.1189 - 0.4759    robustly verifiable
+    AGB  1.3544 - 5.4176    verdict flips at the optimistic corner
+    SIT  1.8703 - 7.4812    robustly not verifiable (campaign, exponential kernel)
+    The two eleven-winter archive rows scale identically: shared 0.55-0.96,
+    independent 0.93-1.60.
+
   archive rows (data/phi_archive_design.csv, checked by run_all):
     2019-04        n_eff 331.8   sigma_d 0.3892   phi 2.217
-    14 winters     n_eff 4498.2  sigma_d 0.3892   phi 0.602
-    14 winters     n_eff 4498.2  sigma_d 0.6500   phi 1.006
+    11 winters     n_eff 3534.3  sigma_d 0.3892   phi 0.679
+    11 winters     n_eff 3534.3  sigma_d 0.6500   phi 1.135
     43 months      n_eff 13815.9 sigma_d 0.3892   phi 0.344
     43 months      n_eff 13815.9 sigma_d 0.6500   phi 0.574
 
@@ -106,8 +118,8 @@ monthly diagnostics.
 4. PDF AUDIT AND THE C&G LENGTH RULE
 -----------------------------------------------------------------------------
 Manuscript (`manuscript.pdf`):
-    Output written on manuscript.pdf (25 pages, 406 263 bytes)
-    Overfull \hbox occurrences .......... 0
+    Output written on manuscript.pdf (26 pages, 429 915 bytes)
+    Overfull \hbox occurrences .......... 1 (pre-existing, in Table 1; see note below)
     Underfull \hbox occurrences ......... 0
     Undefined references / citations .... 0
     Figures ............................. 3 (Figs. 1-3)
@@ -117,7 +129,7 @@ Manuscript (`manuscript.pdf`):
     Abstract ............................ 277 words (limit is usually 300)
 
 Supplement (`supplement.pdf`):
-    Output written on supplement.pdf (15 pages, 404 746 bytes)
+    Output written on supplement.pdf (15 pages, 430 652 bytes)
     Overfull \hbox occurrences .......... 0
     Underfull \hbox occurrences ......... 0
     Undefined references / citations .... 0
@@ -128,6 +140,11 @@ Supplement (`supplement.pdf`):
     Body words .......................... 3 240 (captions, bibliography and the
                                              itemised inventory excluded; 3 660
                                              including table bodies and captions)
+
+    NOTE on the single overfull box in the manuscript: it is the wide Table 1
+    (lines 173-186), present before this revision. The edits here changed only
+    cell values (e.g. n_eff 3,534 in place of 4,498), which shortened rather
+    than widened the table, so no new overfull box was introduced.
 
 WORD COUNT UNDER THE C&G RULE
     Rule archived from the publisher's guide (snapshot 2023-12 to 2024-04; to be
@@ -223,14 +240,16 @@ intra-network correlation that the cluster rule cannot reach.
     937b9f65f174456ddb5265ee8f1fb09b  data/phi_kernel_bounds.csv
     dc0728b1a2fed3b3b1cd3cf466c7bfcd  data/phi_sensitivity.csv
     4c1c004bb2a7c3634ce5e0164460239b  data/phi_robustness.csv
-    d23d9712502df22e55f221825b6ad894  data/phi_archive_design.csv
+    0e0d4c63b323752db80ed19b9bd15125  data/phi_archive_design.csv
     990cc6e68213331893fa5edd14e1c09f  data/archive_neff_months.csv
     f8a4ac7229f3ccce259238ed16fd7049  data/archive_acf_curve.csv
-    1a92498e7754ea468b7886963b2e667a  manuscript.tex
-    68d85696605ec0a954b3264aa0d81d5e  supplement.tex
+    a58f0845ddc79a930ee33651df8f1737  data/phi_sensitivity_neff.csv (NEW this revision)
+    6945fa70d4f0102a58ad9e2d57b0d737  data/archive_neff_summary.csv (NEW this revision)
+    4f8aad626dd1acd5ea95136711370620  manuscript.tex
+    b305a2aa8cb3d531f04074e6e775fd20  supplement.tex
     74047f4c9208812f4715d17549f23b29  refs.bib
-    f65790758e6af54e94b52b9dcbdaf24f  manuscript.pdf (committed build)
-    fd5651cff0f420ae1c147e3e054cd53d  supplement.pdf (committed build)
+    e7136ad18c09c2b6773bd2375b5476f5  manuscript.pdf (committed build)
+    12c819799d49a7e0b3f0ecb21fb521d8  supplement.pdf (committed build)
 
 Caveat on figure hashes: matplotlib writes a creation timestamp into every PDF,
 so `figures/*.pdf` hashes change between runs even when the plotted data are

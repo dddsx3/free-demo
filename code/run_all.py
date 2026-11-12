@@ -87,10 +87,11 @@ def check_numbers() -> None:
         bad.append(f"sea-ice high Phi: {float(hi['phi'].iloc[0]):.4f}")
 
     # Archive rows of Table 1 / Sect. 5: measured sigma_d and n_eff, and the
-    # two fourteen-winter verdicts that straddle Phi = 1.
+    # two eleven-winter verdicts that straddle Phi = 1 (the record holds 11
+    # winters, not the 14 assumed by an earlier version).
     archive = pd.read_csv(DATA / "phi_archive_design.csv")
     want = {"single month, grid ACF (2019-04)": (331.8, 2.217),
-            "14 winters (one independent month each)": (4498.2, 0.602),
+            "11 winters (one independent month each)": (3534.3, 0.679),
             "43 months (pooled upper bound)": (13815.9, 0.344)}
     for name, (n_want, phi_want) in want.items():
         row = archive[archive["design"] == name]
@@ -101,10 +102,10 @@ def check_numbers() -> None:
             bad.append(f"{name}: n_eff={float(row['n_eff'].iloc[0]):.1f}")
         if abs(float(row["phi"].iloc[0]) - phi_want) > 5e-3:
             bad.append(f"{name}: Phi={float(row['phi'].iloc[0]):.4f}")
-    indep = archive[(archive["design"] == "14 winters (one independent month each)")
+    indep = archive[(archive["design"] == "11 winters (one independent month each)")
                     & (archive["truth"] == "independent")]
-    if indep.empty or abs(float(indep["phi"].iloc[0]) - 1.006) > 5e-3:
-        bad.append("14-winter independent Phi is not 1.006")
+    if indep.empty or abs(float(indep["phi"].iloc[0]) - 1.135) > 5e-3:
+        bad.append("11-winter independent Phi is not 1.135")
 
     if bad:
         print("\nNumber check FAILED:")
@@ -114,6 +115,68 @@ def check_numbers() -> None:
     print("\nNumber check OK: five Phi values, the 3.447/10.38 cm floors, the "
           "1.28-3.74 sea-ice interval and the archive rows of Table 1 all match "
           "the manuscript.")
+
+
+def check_manuscript() -> None:
+    """Read the manuscript (and supplement) and flag text/number drift.
+
+    The regression tests below catch a number moving in *code* but were blind to
+    the same number drifting in the *prose*.  This guard reads the TeX sources
+    and (a) asserts that the corrected values are present and (b) asserts that
+    the stale values they replaced are absent, so a future edit cannot silently
+    re-introduce the earlier slips.
+    """
+    import re
+    tex = (ROOT / "manuscript.tex").read_text(encoding="utf-8", errors="ignore")
+    sup = (ROOT / "supplement.tex").read_text(encoding="utf-8", errors="ignore")
+    both = tex + "\n" + sup
+    problems = []
+
+    # (stale pattern, where it is still allowed because it is part of the
+    # correction note, corrected pattern that must be present)
+    required = [
+        (r"3(\\?,?)?534", "11-winter n_eff 3,534 must appear in the manuscript"),
+        (r"4(\\?,?)?550", "n_eff needed 4,550 must appear in the manuscript"),
+        (r"hundredfold", "Phi=10 needs a hundredfold (not tenfold) increase"),
+        (r"1, 5 and 20", "Fig. 1 caption isolines must read 1, 5 and 20"),
+        (r"0\.408", "RMS sigma_d must be 0.408 m"),
+    ]
+    for pat, msg in required:
+        if not re.search(pat, both):
+            problems.append("missing: " + msg)
+
+    # Stale tokens that must NOT appear as live claims any more.  The 0.269 /
+    # 0.080 values and the "fourteen-winter design does not exist" sentence are
+    # allowed because they are part of the correction note; a live claim of the
+    # old 14-winter archive (n_eff 4,498; Phi 0.60 / 1.006) is forbidden.
+    forbidden_exact = [
+        ("14 winters (one independent", "archive_design label is now 11 winters"),
+        ("4\\,498", "stale 14-winter n_eff 4,498 must be gone"),
+        ("4,498", "stale 14-winter n_eff 4,498 must be gone"),
+        ("1.006", "stale 14-winter independent Phi 1.006 must be gone"),
+        (r"0\.60\b", "stale 14-winter shared Phi 0.60 must be gone"),
+    ]
+    for tok, msg in forbidden_exact:
+        if tok in both:
+            problems.append("forbidden live token: " + msg)
+
+    # The Fig. 1 caption / ACF slips: forbid the old literal combinations as
+    # live statements (they may appear quoted inside the correction note).
+    if re.search(r"isolines of .*?20, 200 and 600", tex):
+        problems.append("Fig. 1 caption still says 20, 200 and 600")
+    if re.search(r"root-mean-square 0\.461", both):
+        problems.append("RMS sigma_d still printed as 0.461 m")
+    if re.search(r"tenfold increase in independent", tex):
+        problems.append("still says tenfold increase in independent information")
+    if re.search(r"\b4,549\b", both):
+        problems.append("stale 4,549 (should be 4,550) still present")
+
+    if problems:
+        print("\nManuscript literal check FAILED:")
+        for p in problems:
+            print("  " + p)
+        raise SystemExit(1)
+    print("Manuscript literal check OK: corrected values present, stale ones gone.")
 
 
 def compile_tex() -> None:
@@ -188,6 +251,8 @@ def main() -> None:
 
     run("phi_core.py")
     check_numbers()
+    run("archive_recompute.py")
+    check_manuscript()
     run("make_figures.py")
 
     if args.archive:

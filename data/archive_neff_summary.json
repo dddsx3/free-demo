@@ -1,0 +1,21 @@
+{
+ "n_eff per winter month (median of acf.csv)": 321.30038785791015,
+ "distinct winters in sigma_by_month.csv": 11,
+ "overlapping months": 43,
+ "n_eff, 11-winter archive": 3534.304266437012,
+ "n_eff, 43-month pooled": 13815.916677890136,
+ "sigma_d median (m)": 0.3892202973365783,
+ "sigma_d RMS (m)": 0.40786280082104975,
+ "sigma_d range (m)": "0.284-0.552",
+ "Phi, 11-winter shared sigma_d=0.389": 0.6794349441476336,
+ "Phi, 11-winter independent sigma_d=0.65": 1.1346600285700412,
+ "n_eff needed for Phi<1 at sigma_d=0.389": 1631.5473934005065,
+ "n_eff needed for Phi<1 at sigma_d=0.65": 4550.251975308643,
+ "kappa_x from released curve": 7.6863256953656665,
+ "kappa_y from released curve": 7.070903744548559,
+ "n_eff 2019-04 from kappa": 331.7983900235421,
+ "sea-ice floor, empirical ACF (cm)": 3.446861082958653,
+ "sea-ice floor, exponential Kish (cm)": 10.099647567925821,
+ "sea-ice Phi, empirical end": 1.2766152159106121,
+ "sea-ice Phi, exponential end": 3.7406102103428966
+}

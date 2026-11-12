@@ -1,21 +1,12 @@
-# Superseded Copernicus class package, kept on disk for provenance only
-legacy_copernicus/
-
-# Internal referee-preparation notes, not part of the published archive
-response_ready_notes.md
-
-# Python
 __pycache__/
 *.py[cod]
-.pytest_cache/
 .venv/
-venv/
-
-# LaTeX intermediates (the built PDF is kept on purpose)
 *.aux
-*.bbl
 *.blg
 *.log
 *.out
 *.spl
 *.synctex.gz
+.crossref_cache.json
+.DS_Store
+Thumbs.db
