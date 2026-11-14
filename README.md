@@ -1,52 +1,65 @@
-# Verification floor Phi
+# Verification floor Φ
 
-A claim about model error can only be tested if the archive used to test it is
-informative enough. This repository implements the dimensionless floor that says
-how informative it has to be,
+[![License: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE) [![Data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-lightgrey.svg)](DATA_LICENSE) [![Python 3](https://img.shields.io/badge/python-3.10%2B-3776ab.svg)](https://www.python.org)
 
-    Phi = 2.802 * sigma_d / (claim * sqrt(n_eff)),
+A claim about model error can only be tested if the archive used to test it carries
+enough independent information. This repository implements the dimensionless floor
+that says how much,
 
-together with the archive recomputation for Arctic sea-ice thickness thickness
-that supplies its hardest case, and the sensitivity grids reported in the paper.
+    Φ = 2.802 · σ_d / (claim · √n_eff)
 
-`Phi > 1` means the claim cannot be verified by this archive. `Phi < 1` means it
-can be — not that it is right.
+together with the Arctic sea-ice archive recomputation that supplies its hardest
+case, and every sensitivity grid reported in the paper. `Φ > 1` means the claim
+cannot be verified by this archive; `Φ < 1` means it can be — not that it is right.
 
-## What is here
+![Verification floor against claimed magnitude](docs/preview.png)
 
-    code/        the whole chain, one entry point
-      phi_core.py           Phi, MDE, effective sample size, sensitivity grids
-      archive_recompute.py  sea-ice archive: kappa, n_eff, the two kernels
-      run_all.py            runs everything, checks every number, writes figures
-      make_figures.py       the seven figures
-      test_phi_core.py      ten regression tests
-    data/        every table the paper quotes, as CSV, with data/README.md
-    figures/     the figures (PDF)
-    manuscript.tex, supplement.tex, refs.bib   the submission-side sources
+*Floor versus claim for the five domains. Diagonals are Φ = 0.1, 1, 10; the shaded
+region is the unverifiable side. Salinity and precipitation sit far below the
+watershed, soil moisture just below it, sea ice and biomass above it.*
+
+## What it settles
+
+| quantity | value |
+|---|---|
+| Φ, sea-surface salinity | 0.019 |
+| Φ, precipitation | 0.043 |
+| Φ, soil moisture | 0.24 |
+| Φ, sea-ice thickness | 1.3–3.7 (two kernels) |
+| Φ, forest biomass | 2.71 |
+| sea-ice floor, empirical / exponential kernel | 3.447 cm / 10.10 cm |
+| n_eff, eleven-winter archive | 3,534 (43 pooled months: 13,816) |
+
+## Contents
+
+    code/        phi_core · archive_recompute · run_all · make_figures · tests
+    data/        every table the paper quotes, as CSV (see data/README.md)
+    figures/     the seven figures
+    manuscript.tex, supplement.tex, refs.bib    submission-side sources
     REPRO_CHECK.txt   environment, run order, expected values
 
-## Run it
+## Quick start
 
     pip install numpy scipy pandas matplotlib pytest
-    python code/run_all.py            # arithmetic, number check, figures, both PDFs
-    python -m pytest code             # ten tests
-    python code/run_all.py --refs     # optional: re-resolve every DOI
+    python code/run_all.py          # arithmetic, number check, figures, both PDFs
+    python -m pytest code           # ten regression tests
 
-`run_all.py` exits non-zero if any headline number moves by more than 0.1 % from
-the value printed in the manuscript, so it doubles as a submission gate.
+`run_all.py` exits non-zero if any headline number moves by more than 0.1 % from the
+value printed in the manuscript, so it doubles as a submission gate. The sea-ice
+example reads two product fields that are not redistributed; without them
+`archive_recompute.py` falls back to the two CSVs those fields produced and
+recomputes the same summary.
 
-## The archive example
+## The paper
 
-The sea-ice section uses two monthly product fields that are not redistributed
-here. Without them, `archive_example.py` falls back to the two CSVs those fields
-produced (`data/archive/sigma_by_month.csv`, `data/archive/acf.csv`) and
-recomputes the same summary:
-
-    python code/archive_recompute.py
-
-Every measured number in the paper reproduces that way.
+*A dimensionless verification floor for model assessment* — submitted to
+**Computers & Geosciences**. Sections 3–5 are reproduced here; `REPRO_CHECK.txt`
+maps each number to the file that produces it.
 
 ## Licence and citation
 
-Code MIT (see LICENSE); derived tables CC BY 4.0. If you use this, please cite
-the article and this repository (CITATION.cff).
+Code MIT (`LICENSE`), derived tables CC BY 4.0 (`DATA_LICENSE`). Cite the article
+and this repository — see `CITATION.cff`.
+
+---
+[中文说明](README.zh-CN.md)
